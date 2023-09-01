@@ -70,6 +70,22 @@ mixin _$MetarStore on _MetarStore, Store {
     });
   }
 
+  late final _$isLoadingAtom =
+      Atom(name: '_MetarStore.isLoading', context: context);
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
   late final _$searchHistoryAtom =
       Atom(name: '_MetarStore.searchHistory', context: context);
 
@@ -94,6 +110,33 @@ mixin _$MetarStore on _MetarStore, Store {
     return _$fetchMetarAsyncAction.run(() => super.fetchMetar(airport));
   }
 
+  late final _$addToSearchHistoryAsyncAction =
+      AsyncAction('_MetarStore.addToSearchHistory', context: context);
+
+  @override
+  Future<void> addToSearchHistory(Airport airport) {
+    return _$addToSearchHistoryAsyncAction
+        .run(() => super.addToSearchHistory(airport));
+  }
+
+  late final _$removeFromSearchHistoryAsyncAction =
+      AsyncAction('_MetarStore.removeFromSearchHistory', context: context);
+
+  @override
+  Future<void> removeFromSearchHistory(Airport airport) {
+    return _$removeFromSearchHistoryAsyncAction
+        .run(() => super.removeFromSearchHistory(airport));
+  }
+
+  late final _$getSearchHistoryFromPrefsAsyncAction =
+      AsyncAction('_MetarStore.getSearchHistoryFromPrefs', context: context);
+
+  @override
+  Future<void> getSearchHistoryFromPrefs() {
+    return _$getSearchHistoryFromPrefsAsyncAction
+        .run(() => super.getSearchHistoryFromPrefs());
+  }
+
   late final _$getSuggestionsAsyncAction =
       AsyncAction('_MetarStore.getSuggestions', context: context);
 
@@ -106,17 +149,6 @@ mixin _$MetarStore on _MetarStore, Store {
 
   late final _$_MetarStoreActionController =
       ActionController(name: '_MetarStore', context: context);
-
-  @override
-  void addToSearchHistory(Airport airport) {
-    final _$actionInfo = _$_MetarStoreActionController.startAction(
-        name: '_MetarStore.addToSearchHistory');
-    try {
-      return super.addToSearchHistory(airport);
-    } finally {
-      _$_MetarStoreActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   Iterable<Widget> getHistoryList(
@@ -136,6 +168,7 @@ mixin _$MetarStore on _MetarStore, Store {
 metar: ${metar},
 hasAlert: ${hasAlert},
 alertMessage: ${alertMessage},
+isLoading: ${isLoading},
 searchHistory: ${searchHistory},
 hasMetar: ${hasMetar},
 lastUpdated: ${lastUpdated}

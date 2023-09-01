@@ -24,6 +24,8 @@ class MetarPage extends StatelessWidget {
       }
     });
 
+    metarStore.getSearchHistoryFromPrefs();
+
     final SearchController controller = SearchController();
 
     return Center(
@@ -33,19 +35,26 @@ class MetarPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SearchAnchor(
+                // searchController: controller,
                 builder: (BuildContext context, SearchController controller) {
-              return SearchBar(
-                controller: controller,
-                padding: const MaterialStatePropertyAll<EdgeInsets>(
-                  EdgeInsets.symmetric(horizontal: 16.0),
-                ),
-                onTap: () {
+              // return SearchBar(
+              //   controller: controller,
+              //   padding: const MaterialStatePropertyAll<EdgeInsets>(
+              //     EdgeInsets.symmetric(horizontal: 16.0),
+              //   ),
+              //   onTap: () {
+              //     controller.openView();
+              //   },
+              //   onChanged: (_) {
+              //     controller.openView();
+              //   },
+              //   leading: const Icon(Icons.search),
+              // );
+              return IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {
                   controller.openView();
                 },
-                onChanged: (_) {
-                  controller.openView();
-                },
-                leading: const Icon(Icons.search),
               );
             }, suggestionsBuilder:
                     (BuildContext context, SearchController controller) {
@@ -62,11 +71,13 @@ class MetarPage extends StatelessWidget {
               return metarStore.getSuggestions(controller, context);
             }),
             Observer(
-              builder: (_) => Text(
-                metarStore.metar != null
-                    ? '${metarStore.metar?.raw}'
-                    : "No data",
-              ),
+              builder: (_) => metarStore.isLoading
+                  ? const CircularProgressIndicator()
+                  : Text(
+                      metarStore.metar != null
+                          ? '${metarStore.metar?.raw}'
+                          : "No data",
+                    ),
             ),
           ],
         ),
