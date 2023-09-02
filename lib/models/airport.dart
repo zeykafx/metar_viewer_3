@@ -8,7 +8,7 @@ class Airport {
   String frequency;
   double msl;
   List<String> runways;
-  // List<Frequency> frequencies;
+  List<Frequency> frequencies;
 
   Airport(
     this.icao,
@@ -20,20 +20,21 @@ class Airport {
     this.frequency,
     this.msl,
     this.runways,
+    this.frequencies,
   );
 
   static fromDb(Map<String, dynamic> data) {
     List<String> runwayData = data['Runways'].split(",") ?? [];
 
-    // List<Frequency> frequencies = [];
-    // if (data["Freq_names"] != "") {
-    //   List<String> freqs = data['Freq_names'].split(" ");
-    //   List<String> freqData = data['Freq_data'].split(":");
-    //
-    //   for (int i = 0; i < data['Freq_names'].split(" ").length; i++) {
-    //     frequencies.add(Frequency(freqs[i], freqData[i]));
-    //   }
-    // }
+    List<Frequency> frequencies = [];
+    if (data["Freq_names"] != "") {
+      List<String> freqs = data['Freq_names'].split(":");
+      List<String> freqData = data['Freq_data'].split(":");
+
+      for (int i = 0; i < data['Freq_names'].split(":").length; i++) {
+        frequencies.add(Frequency(freqs[i], freqData[i]));
+      }
+    }
 
     return Airport(
       data['NavId'],
@@ -45,6 +46,7 @@ class Airport {
       data['Freq'],
       data['MSL'],
       runwayData,
+      frequencies,
     );
   }
 }
@@ -54,4 +56,9 @@ class Frequency {
   String frequency;
 
   Frequency(this.name, this.frequency);
+
+  @override
+  String toString() {
+    return "$name: $frequency";
+  }
 }

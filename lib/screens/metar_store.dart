@@ -56,6 +56,7 @@ abstract class _MetarStore with Store {
       print(e);
       alertMessage = "Failed to fetch metar for ${airport.icao}";
       hasAlert = true;
+      isLoading = false;
     }
   }
 
@@ -107,7 +108,7 @@ abstract class _MetarStore with Store {
         List<Map<String, Object?>> res = await database!.query(
           "NatFixes",
           where: "NavId LIKE ?",
-          whereArgs: ["$icao%"],
+          whereArgs: ["%$icao%"],
         );
         Airport airportFromPrefs = Airport.fromDb(res[0]);
         if (!searchHistory.contains(airportFromPrefs)) {
@@ -150,8 +151,8 @@ abstract class _MetarStore with Store {
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      controller.text = "";
-                      controller.closeView("");
+                      // controller.text = "";
+                      // controller.closeView("");
                       removeFromSearchHistory(airport);
                     },
                     child: const Text("Delete"),
