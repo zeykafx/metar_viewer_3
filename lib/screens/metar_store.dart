@@ -123,37 +123,42 @@ abstract class _MetarStore with Store {
 
   @action
   Iterable<Widget> getHistoryList(
-      SearchController controller, BuildContext context) {
+    SearchController controller,
+    BuildContext context,
+  ) {
     return searchHistory.map(
       (Airport airport) => ListTile(
-        title: Text(airport.icao),
+        title: Text("${airport.icao} - ${airport.facility}"),
         subtitle: Text(airport.state),
         trailing: IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
             showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                        title: const Text("Delete airport from history?"),
-                        content: Text(
-                            "Do you really want to delete ${airport.icao} from your search history?"),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text("Cancel"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              controller.text = "";
-                              controller.closeView("");
-                              removeFromSearchHistory(airport);
-                            },
-                            child: const Text("Delete"),
-                          ),
-                        ]));
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("Delete airport from history?"),
+                content: Text(
+                  "Do you really want to delete ${airport.icao} from your search history?",
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      controller.text = "";
+                      controller.closeView("");
+                      removeFromSearchHistory(airport);
+                    },
+                    child: const Text("Delete"),
+                  ),
+                ],
+              ),
+            );
           },
         ),
         onTap: () {
@@ -168,10 +173,14 @@ abstract class _MetarStore with Store {
 
   @action
   Future<Iterable<Widget>> getSuggestions(
-      SearchController controller, BuildContext context) async {
-    List<Map<String, Object?>> res = await database!.query("NatFixes",
-        where: "NavId LIKE ?",
-        whereArgs: ["${controller.text.toUpperCase()}%"]);
+    SearchController controller,
+    BuildContext context,
+  ) async {
+    List<Map<String, Object?>> res = await database!.query(
+      "NatFixes",
+      where: "NavId LIKE ?",
+      whereArgs: ["${controller.text.toUpperCase()}%"],
+    );
     List<Airport> airports = [];
     for (var element in res) {
       airports.add(Airport.fromDb(element));

@@ -26,7 +26,7 @@ class AvwxApi {
       }
     }
 
-    String reqUrl = '${baseUrl}metar/${icao.toUpperCase()}?options=info';
+    String reqUrl = '${baseUrl}metar/${icao.toUpperCase()}?options=summary';
     Uri uri = Uri.parse(reqUrl);
     http.Response response = await http.get(
       uri,
@@ -34,7 +34,7 @@ class AvwxApi {
     );
 
     if (response.statusCode == 200) {
-      metar = Metar.fromJson(response.body);
+      metar = Metar.fromJson(response.body, airport);
       cachedAirports[airport.icao] = (airport, currentTime, metar!);
       return (metar!, false);
     } else {
