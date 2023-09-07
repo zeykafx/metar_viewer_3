@@ -6,13 +6,19 @@ import 'package:time_formatter/time_formatter.dart';
 
 import 'metar_store.dart';
 
-class MetarPage extends StatelessWidget {
+class MetarPage extends StatefulWidget {
   const MetarPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final metarStore = MetarStore();
+  State<MetarPage> createState() => _MetarPageState();
+}
 
+class _MetarPageState extends State<MetarPage> {
+  MetarStore metarStore = MetarStore();
+
+  @override
+  void initState() {
+    super.initState();
     final dispose = reaction((_) => metarStore.hasAlert, (bool hasAlert) {
       // if there is an alert to show, show it in a snackbar
       if (hasAlert) {
@@ -27,23 +33,26 @@ class MetarPage extends StatelessWidget {
     });
 
     metarStore.getSearchHistoryFromPrefs();
+  }
 
-    // final SearchController controller = SearchController();
+  // final SearchController controller = SearchController();
 
-    Widget buildCard(Widget content) {
-      return Expanded(
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 28.0,
-              vertical: 18.0,
-            ),
-            child: content,
+  Widget buildCard(Widget content) {
+    return Expanded(
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 28.0,
+            vertical: 18.0,
           ),
+          child: content,
         ),
-      );
-    }
+      ),
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Center(
@@ -294,8 +303,8 @@ class MetarPage extends StatelessWidget {
                                 children: [
                                   if (metarStore.metar != null)
                                     Transform.rotate(
-                                      angle: double.parse(
-                                              metarStore.metar!.windDirection) -
+                                      angle: metarStore.metar!.windDirection
+                                              .toDouble() -
                                           90,
                                       child: Icon(
                                         Icons.arrow_right_alt_rounded,
@@ -494,6 +503,7 @@ class MetarPage extends StatelessWidget {
                       const SizedBox(height: 8.0),
                       AirportInfo(
                         airport: metarStore.metar!.airport,
+                        metar: metarStore.metar!,
                       ),
                     ],
                   ],

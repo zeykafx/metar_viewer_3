@@ -10,7 +10,7 @@ class Metar {
 
   DateTime observationTime;
   DateTime time;
-  String windDirection;
+  int windDirection;
   String windSpeed;
   String windGust;
   String visibility;
@@ -55,7 +55,7 @@ class Metar {
     DateTime observationTime =
         DateTime.parse(json['time']['dt']) ?? DateTime.now();
     DateTime time = DateTime.parse(json['meta']['timestamp']);
-    String windDirection = json['wind_direction']['repr'] ?? "";
+    int windDirection = json['wind_direction']['value'] ?? 0;
     String windSpeed = json['wind_speed']['repr'] ?? "0";
     String windGust =
         json['wind_gust'] != null ? json['wind_gust']['repr'] : "/";

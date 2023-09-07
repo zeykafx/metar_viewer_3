@@ -36,34 +36,52 @@ class Airport {
       List<String> runwayPair = data['Runways'].split(",");
       for (int i = 0; i < numRunways; i++) {
         // format for data["field"]: NumRunways = 2, Runways = "18/36,H1/H1", Lengths = "2536,40", Widths = "250,40", Surfaces = "TURF,GRASS"
-        List<String> runwayName = runwayPair[i].split("/"); // ["18", "36"]
-        String runwayLengths = data['Lengths'].split(",")[i]; // "2536"
-        String runwayWidths = data['Widths'].split(",")[i]; // "250"
-        String runwaySurfaces = data['Surfaces'].split(",")[i]; // "TURF"
+        // List<String> runwayName = runwayPair[i].split("/"); // ["18", "36"]
+        List<String> runwayName = [];
+        if (runwayPair.length > i) {
+          runwayName = runwayPair[i].split("/"); // ["18", "36"]
+        }
+
+        String runwayLengths = "";
+        if (data["Lengths"].split(",").length > i) {
+          runwayLengths = data['Lengths'].split(",")[i]; // "2536"
+        }
+
+        String runwayWidths = "";
+        if (data["Widths"].split(",").length > i) {
+          runwayWidths = data['Widths'].split(",")[i]; // "250"
+        }
+
+        String runwaySurfaces = "";
+        if (data["Surfaces"].split(",").length > i) {
+          runwaySurfaces = data['Surfaces'].split(",")[i]; // "TURF"
+        }
 
         int runwayAngle1 = 0;
         int runwayAngle2 = 0;
 
-        if (runwayName
-                .map((e) => e.contains(RegExp(r"^[RL]+$")))
-                .contains(true) ||
+        if (runwayName.map((e) => e.contains(RegExp(r"[RL]"))).contains(true) ||
             runwayName
-                .map((e) => e.contains(RegExp(r'^[0-9]+$')))
+                .map((e) => e.contains(RegExp(r'[0-9]')))
                 .contains(true)) {
           // remove any letter from the runway name to get the runway angle
-          int runwayAngle1 =
-              int.parse(runwayName[0].replaceAll(RegExp(r"[A-Z]"), "")) *
-                  10; // 180
-          int runwayAngle2 =
-              int.parse(runwayName[1].replaceAll(RegExp(r"[A-Z]"), "")) *
-                  10; // 360
+          try {
+            runwayAngle1 =
+                int.parse(runwayName[0].replaceAll(RegExp(r"[a-zA-Z]"), "")) *
+                    10; // 180
+            if (runwayName.length > 1) {
+              runwayAngle2 =
+                  int.parse(runwayName[1].replaceAll(RegExp(r"[a-zA-Z]"), "")) *
+                      10; // 360
+            }
+          } catch (e, s) {
+            print(e);
+            print(s);
+          }
         }
-
         String name = "";
         if (runwayName.length > 1) {
           name = "${runwayName[0]}/${runwayName[1]}";
-        } else {
-          name = runwayName[0];
         }
 
         runways.add(Runway(

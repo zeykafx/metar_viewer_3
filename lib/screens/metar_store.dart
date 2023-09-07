@@ -52,8 +52,9 @@ abstract class _MetarStore with Store {
         alertMessage = "";
         hasAlert = false;
       }
-    } catch (e) {
+    } catch (e, s) {
       print(e);
+      print(s);
       alertMessage = "Failed to fetch metar for ${airport.icao}";
       hasAlert = true;
       isLoading = false;
