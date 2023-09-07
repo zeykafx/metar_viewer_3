@@ -180,7 +180,7 @@ abstract class _MetarStore with Store {
     List<Map<String, Object?>> res = await database!.query(
       "NatFixes",
       where: "NavId LIKE ?",
-      whereArgs: ["${controller.text.toUpperCase()}%"],
+      whereArgs: ["%${controller.text.toUpperCase()}%"],
     );
     List<Airport> airports = [];
     for (var element in res) {

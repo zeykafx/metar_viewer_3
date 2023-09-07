@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:metar_viewer_3/screens/components/airport_info.dart';
 import 'package:mobx/mobx.dart';
 import 'package:time_formatter/time_formatter.dart';
 
@@ -199,34 +200,34 @@ class MetarPage extends StatelessWidget {
                           ),
                           child: Column(
                             children: [
-                              const Text(
+                              Text(
                                 "Raw Metar",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context).dividerColor,
+                                    ),
                               ),
                               Text(
                                 metarStore.metar != null
                                     ? metarStore.metar!.raw
                                     : "Raw metar",
+                              ),
+                              const SizedBox(height: 8.0),
+                              Text(
+                                "Summary",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
                                     ?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
-                              ),
-                              const SizedBox(height: 8.0),
-                              const Text(
-                                "Summary",
                               ),
                               Text(
                                 metarStore.metar != null
                                     ? metarStore.metar!.summary
                                     : "Summary",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: Theme.of(context).dividerColor,
-                                    ),
                               ),
                             ],
                           ),
@@ -243,34 +244,34 @@ class MetarPage extends StatelessWidget {
                         buildCard(
                           Column(
                             children: [
-                              const Text(
+                              Text(
                                 "Temperature",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context).dividerColor,
+                                    ),
                               ),
                               Text(
                                 metarStore.metar != null
                                     ? "${metarStore.metar!.temperature}°${metarStore.metar!.temperatureUnits}"
                                     : "temp°C",
+                              ),
+                              const SizedBox(height: 8.0),
+                              Text(
+                                "Dewpoint",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
                                     ?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
-                              ),
-                              const SizedBox(height: 8.0),
-                              const Text(
-                                "Dewpoint",
                               ),
                               Text(
                                 metarStore.metar != null
                                     ? "${metarStore.metar!.dewpoint}°${metarStore.metar!.temperatureUnits}"
                                     : "dew°C",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: Theme.of(context).dividerColor,
-                                    ),
                               ),
                             ],
                           ),
@@ -279,8 +280,14 @@ class MetarPage extends StatelessWidget {
                         buildCard(
                           Column(
                             children: [
-                              const Text(
+                              Text(
                                 "Winds",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context).dividerColor,
+                                    ),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -301,29 +308,23 @@ class MetarPage extends StatelessWidget {
                                     metarStore.metar != null
                                         ? "${metarStore.metar!.windDirection}° @ ${metarStore.metar!.windSpeed}kt${metarStore.metar!.windGust != "/" ? " gusting ${metarStore.metar!.windGust}kt" : ""}"
                                         : "Winds",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          color: Theme.of(context).dividerColor,
-                                        ),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 8.0),
-                              const Text(
-                                "Visibility",
-                              ),
                               Text(
-                                metarStore.metar != null
-                                    ? "${metarStore.metar!.visibility} ${metarStore.metar!.visiblityUnits}"
-                                    : "Visibility",
+                                "Visibility",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
                                     ?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
+                              ),
+                              Text(
+                                metarStore.metar != null
+                                    ? "${metarStore.metar!.visibility} ${metarStore.metar!.visiblityUnits}"
+                                    : "Visibility",
                               ),
                             ],
                           ),
@@ -332,13 +333,8 @@ class MetarPage extends StatelessWidget {
                         buildCard(
                           Column(
                             children: [
-                              const Text(
-                                "Altimeter",
-                              ),
                               Text(
-                                metarStore.metar != null
-                                    ? "${metarStore.metar!.altimeter} ${metarStore.metar!.altIsInHg ? "inHg" : "hPa"}"
-                                    : "Altimeter",
+                                "Altimeter",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -346,9 +342,20 @@ class MetarPage extends StatelessWidget {
                                       color: Theme.of(context).dividerColor,
                                     ),
                               ),
+                              Text(
+                                metarStore.metar != null
+                                    ? "${metarStore.metar!.altimeter} ${metarStore.metar!.altIsInHg ? "inHg" : "hPa"}"
+                                    : "Altimeter",
+                              ),
                               const SizedBox(height: 8.0),
-                              const Text(
+                              Text(
                                 "Condition",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context).dividerColor,
+                                    ),
                               ),
                               Text(
                                 metarStore.metar != null
@@ -374,8 +381,13 @@ class MetarPage extends StatelessWidget {
                                                               "LIFR"
                                                           ? Colors.purple
                                                           : Theme.of(context)
-                                                              .dividerColor
-                                          : Theme.of(context).dividerColor,
+                                                              .textTheme
+                                                              .bodyMedium
+                                                              ?.color
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.color,
                                     ),
                               ),
                             ],
@@ -387,40 +399,46 @@ class MetarPage extends StatelessWidget {
                     // Cloud layers
                     Row(
                       children: [
-                        Flexible(
-                          flex: 2,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Card(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 28.0,
-                                  vertical: 22.0,
-                                ),
-                                child: Column(
-                                  children: [
-                                    const Text(
-                                      "Cloud Layers",
-                                    ),
-                                    Text(
-                                      metarStore.metar != null
-                                          ? metarStore.metar!.cloudLayers
-                                              .join(", ")
-                                          : "Cloud Layers",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color:
-                                                Theme.of(context).dividerColor,
-                                          ),
-                                    ),
-                                  ],
+                        // cloud layers
+                        if (metarStore.metar != null &&
+                            metarStore.metar!.cloudLayers.isNotEmpty) ...[
+                          Flexible(
+                            flex: 2,
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 28.0,
+                                    vertical: 22.0,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "Cloud Layers",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .dividerColor,
+                                            ),
+                                      ),
+                                      Text(
+                                        metarStore.metar != null
+                                            ? metarStore.metar!.cloudLayers
+                                                .join(", ")
+                                            : "Cloud Layers",
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
+
+                        // remarks
                         Flexible(
                           flex: 1,
                           child: SizedBox(
@@ -433,11 +451,8 @@ class MetarPage extends StatelessWidget {
                                 ),
                                 child: Column(
                                   children: [
-                                    const Text("Remarks"),
                                     Text(
-                                      metarStore.metar != null
-                                          ? metarStore.metar!.remarks
-                                          : "Remarks",
+                                      "Remarks",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium
@@ -445,6 +460,11 @@ class MetarPage extends StatelessWidget {
                                             color:
                                                 Theme.of(context).dividerColor,
                                           ),
+                                    ),
+                                    Text(
+                                      metarStore.metar != null
+                                          ? metarStore.metar!.remarks
+                                          : "Remarks",
                                     ),
                                   ],
                                 ),
@@ -464,6 +484,18 @@ class MetarPage extends StatelessWidget {
                             ),
                       ),
                     ),
+
+                    // airport info
+                    if (metarStore.metar != null) ...[
+                      const SizedBox(height: 16.0),
+                      const Text(
+                        "Airport Info",
+                      ),
+                      const SizedBox(height: 8.0),
+                      AirportInfo(
+                        airport: metarStore.metar!.airport,
+                      ),
+                    ],
                   ],
                 );
               }),
