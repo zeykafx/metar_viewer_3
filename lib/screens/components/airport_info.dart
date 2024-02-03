@@ -235,6 +235,16 @@ class BestRunwayForWinds extends StatelessWidget {
                       alignment: Alignment.center,
                     ),
                   ),
+
+                  // wind direction
+                  Transform.rotate(
+                    angle: vector.radians(metar.windDirection.toDouble() - 180),
+                    child: Icon(
+                      Icons.arrow_upward_rounded,
+                      size: 100,
+                      color: Theme.of(context).dividerColor.withOpacity(0.5),
+                    ),
+                  ),
                 ],
               ),
             ),
