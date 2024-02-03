@@ -52,13 +52,11 @@ class Metar {
     String raw = json['raw'] ?? "";
     String summary = json['summary'] ?? "";
     String station = json['station'] ?? "";
-    DateTime observationTime =
-        DateTime.parse(json['time']['dt']) ?? DateTime.now();
+    DateTime observationTime = DateTime.parse(json['time']['dt']) ?? DateTime.now();
     DateTime time = DateTime.parse(json['meta']['timestamp']);
     int windDirection = json['wind_direction']['value'] ?? 0;
     String windSpeed = json['wind_speed']['repr'] ?? "0";
-    String windGust =
-        json['wind_gust'] != null ? json['wind_gust']['repr'] : "/";
+    String windGust = json['wind_gust'] != null ? json['wind_gust']['repr'] : "/";
     String visibility = json['visibility']['repr'] ?? "9999";
     String visiblityUnits = json['units']['visibility'] ?? "sm";
     String temperature = json['temperature']['repr'] ?? "?";

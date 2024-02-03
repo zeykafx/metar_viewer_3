@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class Airport {
   String icao;
   double latitude;
@@ -32,8 +34,10 @@ class Airport {
   static fromDb(Map<String, dynamic> data) {
     int numRunways = data['NumRunways'] ?? 0;
     List<Runway> runways = [];
+
     if (data["Runways"] != "") {
       List<String> runwayPair = data['Runways'].split(",");
+
       for (int i = 0; i < numRunways; i++) {
         // format for data["field"]: NumRunways = 2, Runways = "18/36,H1/H1", Lengths = "2536,40", Widths = "250,40", Surfaces = "TURF,GRASS"
         // List<String> runwayName = runwayPair[i].split("/"); // ["18", "36"]
@@ -61,22 +65,22 @@ class Airport {
         int runwayAngle2 = 0;
 
         if (runwayName.map((e) => e.contains(RegExp(r"[RL]"))).contains(true) ||
-            runwayName
-                .map((e) => e.contains(RegExp(r'[0-9]')))
-                .contains(true)) {
+            runwayName.map((e) => e.contains(RegExp(r'[0-9]'))).contains(true)) {
           // remove any letter from the runway name to get the runway angle
           try {
-            runwayAngle1 =
-                int.parse(runwayName[0].replaceAll(RegExp(r"[a-zA-Z]"), "")) *
-                    10; // 180
+            String angleStr = runwayName[0].replaceAll(RegExp(r"\D"), "");
+
+            runwayAngle1 = int.parse(angleStr != "" ? angleStr : "0") * 10; // 180
             if (runwayName.length > 1) {
-              runwayAngle2 =
-                  int.parse(runwayName[1].replaceAll(RegExp(r"[a-zA-Z]"), "")) *
-                      10; // 360
+              String angleStr2 = runwayName[1].replaceAll(RegExp(r"\D"), "");
+              runwayAngle2 = int.parse(angleStr2 != "" ? angleStr2 : "0") * 10; // 360
             }
           } catch (e, s) {
-            print(e);
-            print(s);
+            if (kDebugMode) {
+              print("AIRPORT: ${data['NavId']} - $runwayName");
+              print(e);
+              print(s);
+            }
           }
         }
         String name = "";
@@ -84,13 +88,15 @@ class Airport {
           name = "${runwayName[0]}/${runwayName[1]}";
         }
 
-        runways.add(Runway(
-          name,
-          (runwayAngle1, runwayAngle2),
-          runwayLengths,
-          runwayWidths,
-          runwaySurfaces,
-        ));
+        if (runwayWidths != "" && runwayWidths != "0") {
+          runways.add(Runway(
+            name,
+            (runwayAngle1, runwayAngle2),
+            runwayLengths,
+            runwayWidths,
+            runwaySurfaces,
+          ));
+        }
       }
     }
 

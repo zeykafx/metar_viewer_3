@@ -22,7 +22,7 @@ abstract class _MetarStore with Store {
   bool get hasMetar => metar != null;
 
   @computed
-  DateTime? get lastUpdated => metar?.time!;
+  DateTime? get lastUpdated => metar?.time;
 
   @observable
   bool hasAlert = false;
@@ -39,8 +39,7 @@ abstract class _MetarStore with Store {
     try {
       isLoading = true;
 
-      var value = await avwxApi.getMetar(airport);
-      var (Metar metarValue, bool cached) = value;
+      var (Metar metarValue, bool cached) = await avwxApi.getMetar(airport);
       metar = metarValue;
 
       isLoading = false;
@@ -53,8 +52,11 @@ abstract class _MetarStore with Store {
         hasAlert = false;
       }
     } catch (e, s) {
-      print(e);
-      print(s);
+      if (kDebugMode) {
+        print(e);
+        print(s);
+      }
+
       alertMessage = "Failed to fetch metar for ${airport.icao}";
       hasAlert = true;
       isLoading = false;
@@ -64,8 +66,7 @@ abstract class _MetarStore with Store {
   @action
   Future<void> addToSearchHistory(Airport airport) async {
     // add to the search history if it's not already in it
-    if (searchHistory.isEmpty ||
-        !searchHistory.map((e) => e.icao == airport.icao).contains(true)) {
+    if (searchHistory.isEmpty || !searchHistory.any((e) => e.icao == airport.icao)) {
       searchHistory.insert(0, airport);
       LocalStorageInterface pref = await LocalStorage.getInstance();
       // save the new search history to the prefs
@@ -111,6 +112,7 @@ abstract class _MetarStore with Store {
           where: "NavId LIKE ?",
           whereArgs: ["%$icao%"],
         );
+
         Airport airportFromPrefs = Airport.fromDb(res[0]);
         if (!searchHistory.contains(airportFromPrefs)) {
           searchHistory.add(airportFromPrefs);

@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:metar_viewer_3/screens/components/airport_info.dart';
 import 'package:mobx/mobx.dart';
 import 'package:time_formatter/time_formatter.dart';
+import "package:vector_math/vector_math.dart" as vector;
 
 import 'metar_store.dart';
 
@@ -54,7 +55,7 @@ class _MetarPageState extends State<MetarPage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 700),
@@ -85,11 +86,8 @@ class _MetarPageState extends State<MetarPage> {
                             children: [
                               //STATION
                               Text(
-                                metarStore.metar != null
-                                    ? metarStore.metar!.station
-                                    : "Station",
-                                style:
-                                    Theme.of(context).textTheme.headlineMedium,
+                                metarStore.metar != null ? metarStore.metar!.station : "Station",
+                                style: Theme.of(context).textTheme.headlineMedium,
                               ),
 
                               // WINDS
@@ -97,10 +95,7 @@ class _MetarPageState extends State<MetarPage> {
                                 metarStore.metar != null
                                     ? "${metarStore.metar!.windDirection}° @ ${metarStore.metar!.windSpeed}kt"
                                     : "Winds",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
                               ),
@@ -109,36 +104,22 @@ class _MetarPageState extends State<MetarPage> {
                                 metarStore.metar != null
                                     ? "${metarStore.metar!.altimeter} ${metarStore.metar!.altIsInHg ? "inHg" : "hPa"}"
                                     : "Altimeter",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
                               ),
                               // CONDITION
                               Text(
-                                metarStore.metar != null
-                                    ? metarStore.metar!.flightRules
-                                    : "Condition",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
-                                    ?.copyWith(
+                                metarStore.metar != null ? metarStore.metar!.flightRules : "Condition",
+                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                       color: metarStore.metar != null
-                                          ? metarStore.metar!.flightRules ==
-                                                  "VFR"
+                                          ? metarStore.metar!.flightRules == "VFR"
                                               ? Colors.green
-                                              : metarStore.metar!.flightRules ==
-                                                      "MVFR"
+                                              : metarStore.metar!.flightRules == "MVFR"
                                                   ? Colors.blue
-                                                  : metarStore.metar!
-                                                              .flightRules ==
-                                                          "IFR"
+                                                  : metarStore.metar!.flightRules == "IFR"
                                                       ? Colors.red
-                                                      : metarStore.metar!
-                                                                  .flightRules ==
-                                                              "LIFR"
+                                                      : metarStore.metar!.flightRules == "LIFR"
                                                           ? Colors.purple
                                                           : Colors.black
                                           : Theme.of(context).dividerColor,
@@ -168,18 +149,14 @@ class _MetarPageState extends State<MetarPage> {
                               //     leading: const Icon(Icons.search),
                               //   );
                               // },
-                              isFullScreen:
-                                  MediaQuery.of(context).size.width < 700,
+                              isFullScreen: MediaQuery.of(context).size.width < 700,
                               suggestionsBuilder: (
                                 BuildContext context,
                                 SearchController controller,
                               ) {
-                                if (controller.text.isEmpty ||
-                                    controller.text == "" ||
-                                    controller.text == " ") {
+                                if (controller.text.isEmpty || controller.text == "" || controller.text == " ") {
                                   if (metarStore.searchHistory.isNotEmpty) {
-                                    return metarStore.getHistoryList(
-                                        controller, context);
+                                    return metarStore.getHistoryList(controller, context);
                                   }
                                   return [
                                     const Center(
@@ -211,32 +188,22 @@ class _MetarPageState extends State<MetarPage> {
                             children: [
                               Text(
                                 "Raw Metar",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
                               ),
                               Text(
-                                metarStore.metar != null
-                                    ? metarStore.metar!.raw
-                                    : "Raw metar",
+                                metarStore.metar != null ? metarStore.metar!.raw : "Raw metar",
                               ),
                               const SizedBox(height: 8.0),
                               Text(
                                 "Summary",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
                               ),
                               Text(
-                                metarStore.metar != null
-                                    ? metarStore.metar!.summary
-                                    : "Summary",
+                                metarStore.metar != null ? metarStore.metar!.summary : "Summary",
                               ),
                             ],
                           ),
@@ -255,10 +222,7 @@ class _MetarPageState extends State<MetarPage> {
                             children: [
                               Text(
                                 "Temperature",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
                               ),
@@ -270,10 +234,7 @@ class _MetarPageState extends State<MetarPage> {
                               const SizedBox(height: 8.0),
                               Text(
                                 "Dewpoint",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
                               ),
@@ -291,10 +252,7 @@ class _MetarPageState extends State<MetarPage> {
                             children: [
                               Text(
                                 "Winds",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
                               ),
@@ -303,9 +261,7 @@ class _MetarPageState extends State<MetarPage> {
                                 children: [
                                   if (metarStore.metar != null)
                                     Transform.rotate(
-                                      angle: metarStore.metar!.windDirection
-                                              .toDouble() -
-                                          90,
+                                      angle: vector.radians(metarStore.metar!.windDirection.toDouble() + 90),
                                       child: Icon(
                                         Icons.arrow_right_alt_rounded,
                                         color: Theme.of(context).dividerColor,
@@ -323,10 +279,7 @@ class _MetarPageState extends State<MetarPage> {
                               const SizedBox(height: 8.0),
                               Text(
                                 "Visibility",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
                               ),
@@ -344,10 +297,7 @@ class _MetarPageState extends State<MetarPage> {
                             children: [
                               Text(
                                 "Altimeter",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
                               ),
@@ -359,44 +309,24 @@ class _MetarPageState extends State<MetarPage> {
                               const SizedBox(height: 8.0),
                               Text(
                                 "Condition",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       color: Theme.of(context).dividerColor,
                                     ),
                               ),
                               Text(
-                                metarStore.metar != null
-                                    ? metarStore.metar!.flightRules
-                                    : "Condition",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
+                                metarStore.metar != null ? metarStore.metar!.flightRules : "Condition",
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       color: metarStore.metar != null
-                                          ? metarStore.metar!.flightRules ==
-                                                  "VFR"
+                                          ? metarStore.metar!.flightRules == "VFR"
                                               ? Colors.green
-                                              : metarStore.metar!.flightRules ==
-                                                      "MVFR"
+                                              : metarStore.metar!.flightRules == "MVFR"
                                                   ? Colors.blue
-                                                  : metarStore.metar!
-                                                              .flightRules ==
-                                                          "IFR"
+                                                  : metarStore.metar!.flightRules == "IFR"
                                                       ? Colors.red
-                                                      : metarStore.metar!
-                                                                  .flightRules ==
-                                                              "LIFR"
+                                                      : metarStore.metar!.flightRules == "LIFR"
                                                           ? Colors.purple
-                                                          : Theme.of(context)
-                                                              .textTheme
-                                                              .bodyMedium
-                                                              ?.color
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.color,
+                                                          : Theme.of(context).textTheme.bodyMedium?.color
+                                          : Theme.of(context).textTheme.bodyMedium?.color,
                                     ),
                               ),
                             ],
@@ -406,15 +336,50 @@ class _MetarPageState extends State<MetarPage> {
                     ),
 
                     // Cloud layers
-                    Row(
-                      children: [
-                        // cloud layers
-                        if (metarStore.metar != null &&
-                            metarStore.metar!.cloudLayers.isNotEmpty) ...[
+                    IntrinsicHeight(
+                      child: Row(
+                        children: [
+                          // cloud layers
+                          if (metarStore.metar != null && metarStore.metar!.cloudLayers.isNotEmpty) ...[
+                            Flexible(
+                              flex: 1,
+                              child: SizedBox(
+                                width: double.infinity,
+                                // height: 115,
+                                child: Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 28.0,
+                                      vertical: 22.0,
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Text(
+                                          "Cloud Layers",
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                color: Theme.of(context).dividerColor,
+                                              ),
+                                        ),
+                                        Text(
+                                          metarStore.metar != null
+                                              ? metarStore.metar!.cloudLayers.join(", ")
+                                              : "Cloud Layers",
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+
+                          // remarks
                           Flexible(
-                            flex: 2,
+                            flex: 1,
                             child: SizedBox(
                               width: double.infinity,
+                              // height: 115,
                               child: Card(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -422,22 +387,16 @@ class _MetarPageState extends State<MetarPage> {
                                     vertical: 22.0,
                                   ),
                                   child: Column(
+                                    mainAxisSize: MainAxisSize.max,
                                     children: [
                                       Text(
-                                        "Cloud Layers",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(
-                                              color: Theme.of(context)
-                                                  .dividerColor,
+                                        "Remarks",
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                              color: Theme.of(context).dividerColor,
                                             ),
                                       ),
                                       Text(
-                                        metarStore.metar != null
-                                            ? metarStore.metar!.cloudLayers
-                                                .join(", ")
-                                            : "Cloud Layers",
+                                        metarStore.metar != null ? metarStore.metar!.remarks : "Remarks",
                                       ),
                                     ],
                                   ),
@@ -446,42 +405,7 @@ class _MetarPageState extends State<MetarPage> {
                             ),
                           ),
                         ],
-
-                        // remarks
-                        Flexible(
-                          flex: 1,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Card(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 28.0,
-                                  vertical: 22.0,
-                                ),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      "Remarks",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color:
-                                                Theme.of(context).dividerColor,
-                                          ),
-                                    ),
-                                    Text(
-                                      metarStore.metar != null
-                                          ? metarStore.metar!.remarks
-                                          : "Remarks",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
 
                     Padding(
