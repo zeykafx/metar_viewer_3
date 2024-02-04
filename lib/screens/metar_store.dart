@@ -129,7 +129,12 @@ abstract class _MetarStore with Store {
   Iterable<Widget> getHistoryList(
     SearchController controller,
     BuildContext context,
+    bool mounted,
   ) {
+    if (!mounted) {
+      return [];
+    }
+
     return searchHistory.map(
       (Airport airport) => ListTile(
         title: Text("${airport.icao} - ${airport.facility}"),
@@ -179,7 +184,11 @@ abstract class _MetarStore with Store {
   Future<Iterable<Widget>> getSuggestions(
     SearchController controller,
     BuildContext context,
+    bool mounted,
   ) async {
+    if (!mounted) {
+      return [];
+    }
     List<Map<String, Object?>> res = await database!.query(
       "NatFixes",
       where: "NavId LIKE ?",

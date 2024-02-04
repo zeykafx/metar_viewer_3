@@ -40,32 +40,16 @@ class _AirportInfoState extends State<AirportInfo> {
 
   @override
   Widget build(BuildContext context) {
-    // return Card(
-    //   child: Column(
-    //     children: [
-    //       // Airport name
-    //       Text("${airport.icao} - ${airport.facility}"),
-    //       // Airport location
-    //       Text(airport.state),
-    //       // Airport type
-    //       Text(airport.type),
-    //       // Airport elevation
-    //       Text("${airport.msl}ft MSL"),
-    //       // Airport frequencies
-    //       Text(frequencies),
-    //       // Airport runways
-    //       Text(runways),
-    //     ],
-    //   ),
-    // );
+    MediaQueryData mediaQuery = MediaQuery.of(context);
     return Column(
       children: [
         IntrinsicHeight(
-          child: Row(
+          child: Flex(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            direction: mediaQuery.size.width > 600 ? Axis.horizontal : Axis.vertical,
             children: [
               Flexible(
-                flex: 1,
+                flex: mediaQuery.size.width > 600 ? 1 : 0,
                 child: SizedBox(
                   width: double.infinity,
                   child: Card(
@@ -153,11 +137,9 @@ class BestRunwayForWinds extends StatelessWidget {
     // the angle for the site goes from 0 to 18, so if we need more than 18 we use the opposite runway
     // (e.g. if we need 22, we use 4)
     int angleForSite = angle ~/ 10;
-    print("ANGLE FOR RUNWAY (NOT CHANGED): $angleForSite");
     if (angleForSite > 18) {
       angleForSite = angleForSite - 18;
     }
-    print("ANGLE FOR RUNWAY: $angleForSite");
     return "https://metar-taf.com/images/rwy/day-$angleForSite.svg";
   }
 

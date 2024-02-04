@@ -142,9 +142,9 @@ mixin _$MetarStore on _MetarStore, Store {
 
   @override
   Future<Iterable<Widget>> getSuggestions(
-      SearchController controller, BuildContext context) {
+      SearchController controller, BuildContext context, bool mounted) {
     return _$getSuggestionsAsyncAction
-        .run(() => super.getSuggestions(controller, context));
+        .run(() => super.getSuggestions(controller, context, mounted));
   }
 
   late final _$_MetarStoreActionController =
@@ -152,11 +152,11 @@ mixin _$MetarStore on _MetarStore, Store {
 
   @override
   Iterable<Widget> getHistoryList(
-      SearchController controller, BuildContext context) {
+      SearchController controller, BuildContext context, bool mounted) {
     final _$actionInfo = _$_MetarStoreActionController.startAction(
         name: '_MetarStore.getHistoryList');
     try {
-      return super.getHistoryList(controller, context);
+      return super.getHistoryList(controller, context, mounted);
     } finally {
       _$_MetarStoreActionController.endAction(_$actionInfo);
     }
