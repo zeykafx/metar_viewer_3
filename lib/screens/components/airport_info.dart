@@ -128,7 +128,7 @@ class _AirportInfoState extends State<AirportInfo> {
                 ),
               ),
               Flexible(
-                flex: 2,
+                flex: 1,
                 child: SizedBox(
                   width: double.infinity,
                   child: BestRunwayForWinds(airport: widget.airport, metar: widget.metar),

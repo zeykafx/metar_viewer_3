@@ -155,7 +155,7 @@ abstract class _MetarStore with Store {
                     onPressed: () {
                       Navigator.pop(context);
                       // controller.text = "";
-                      // controller.closeView("");
+                      controller.closeView("");
                       removeFromSearchHistory(airport);
                     },
                     child: const Text("Delete"),
@@ -185,6 +185,16 @@ abstract class _MetarStore with Store {
       where: "NavId LIKE ?",
       whereArgs: ["%${controller.text.toUpperCase()}%"],
     );
+
+    if (res.isEmpty && controller.text.isNotEmpty) {
+      // if no airports have the search query in their icao, search by facility name
+      res = await database!.query(
+        "NatFixes",
+        where: "Facility LIKE ?",
+        whereArgs: ["%${controller.text.toUpperCase()}%"],
+      );
+    }
+
     List<Airport> airports = [];
     for (var element in res) {
       airports.add(Airport.fromDb(element));

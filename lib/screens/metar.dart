@@ -212,127 +212,132 @@ class _MetarPageState extends State<MetarPage> {
                     ),
 
                     // Temperature/dewpoint, winds/vis, altimeter/condition
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        // Temperature/dewpoint
-                        buildCard(
-                          Column(
-                            children: [
-                              Text(
-                                "Temperature",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).dividerColor,
-                                    ),
-                              ),
-                              Text(
-                                metarStore.metar != null
-                                    ? "${metarStore.metar!.temperature}°${metarStore.metar!.temperatureUnits}"
-                                    : "temp°C",
-                              ),
-                              const SizedBox(height: 8.0),
-                              Text(
-                                "Dewpoint",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).dividerColor,
-                                    ),
-                              ),
-                              Text(
-                                metarStore.metar != null
-                                    ? "${metarStore.metar!.dewpoint}°${metarStore.metar!.temperatureUnits}"
-                                    : "dew°C",
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Winds/vis
-                        buildCard(
-                          Column(
-                            children: [
-                              Text(
-                                "Winds",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).dividerColor,
-                                    ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  if (metarStore.metar != null)
-                                    Transform.rotate(
-                                      angle: vector.radians(metarStore.metar!.windDirection.toDouble() + 90),
-                                      child: Icon(
-                                        Icons.arrow_right_alt_rounded,
+                    IntrinsicHeight(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          // Temperature/dewpoint
+                          buildCard(
+                            Column(
+                              children: [
+                                Text(
+                                  "Temperature",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                         color: Theme.of(context).dividerColor,
-                                        size: 17.0,
-                                        weight: 1.0,
+                                      ),
+                                ),
+                                Text(
+                                  metarStore.metar != null
+                                      ? "${metarStore.metar!.temperature}°${metarStore.metar!.temperatureUnits}"
+                                      : "temp°C",
+                                ),
+                                const SizedBox(height: 8.0),
+                                Text(
+                                  "Dewpoint",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: Theme.of(context).dividerColor,
+                                      ),
+                                ),
+                                Text(
+                                  metarStore.metar != null
+                                      ? "${metarStore.metar!.dewpoint}°${metarStore.metar!.temperatureUnits}"
+                                      : "dew°C",
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Winds/vis
+                          buildCard(
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "Winds",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: Theme.of(context).dividerColor,
+                                      ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    if (metarStore.metar != null)
+                                      Transform.rotate(
+                                        angle: vector.radians(metarStore.metar!.windDirection.toDouble() + 90),
+                                        child: Icon(
+                                          Icons.arrow_right_alt_rounded,
+                                          color: Theme.of(context).dividerColor,
+                                          size: 17.0,
+                                          weight: 1.0,
+                                        ),
+                                      ),
+                                    Flexible(
+                                      child: Text(
+                                        metarStore.metar != null
+                                            ? "${metarStore.metar!.windDirection}° @ ${metarStore.metar!.windSpeed}kt${metarStore.metar!.windGust != "/" ? " gusting ${metarStore.metar!.windGust}kt" : ""}"
+                                            : "Winds",
                                       ),
                                     ),
-                                  Text(
-                                    metarStore.metar != null
-                                        ? "${metarStore.metar!.windDirection}° @ ${metarStore.metar!.windSpeed}kt${metarStore.metar!.windGust != "/" ? " gusting ${metarStore.metar!.windGust}kt" : ""}"
-                                        : "Winds",
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8.0),
-                              Text(
-                                "Visibility",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).dividerColor,
-                                    ),
-                              ),
-                              Text(
-                                metarStore.metar != null
-                                    ? "${metarStore.metar!.visibility} ${metarStore.metar!.visiblityUnits}"
-                                    : "Visibility",
-                              ),
-                            ],
+                                  ],
+                                ),
+                                const SizedBox(height: 8.0),
+                                Text(
+                                  "Visibility",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: Theme.of(context).dividerColor,
+                                      ),
+                                ),
+                                Text(
+                                  metarStore.metar != null
+                                      ? "${metarStore.metar!.visibility} ${metarStore.metar!.visiblityUnits}"
+                                      : "Visibility",
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        // Altimeter/condition
-                        buildCard(
-                          Column(
-                            children: [
-                              Text(
-                                "Altimeter",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).dividerColor,
-                                    ),
-                              ),
-                              Text(
-                                metarStore.metar != null
-                                    ? "${metarStore.metar!.altimeter} ${metarStore.metar!.altIsInHg ? "inHg" : "hPa"}"
-                                    : "Altimeter",
-                              ),
-                              const SizedBox(height: 8.0),
-                              Text(
-                                "Condition",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).dividerColor,
-                                    ),
-                              ),
-                              Text(
-                                metarStore.metar != null ? metarStore.metar!.flightRules : "Condition",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: metarStore.metar != null
-                                          ? metarStore.metar!.flightRules == "VFR"
-                                              ? Colors.green
-                                              : metarStore.metar!.flightRules == "MVFR"
-                                                  ? Colors.blue
-                                                  : metarStore.metar!.flightRules == "IFR"
-                                                      ? Colors.red
-                                                      : metarStore.metar!.flightRules == "LIFR"
-                                                          ? Colors.purple
-                                                          : Theme.of(context).textTheme.bodyMedium?.color
-                                          : Theme.of(context).textTheme.bodyMedium?.color,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                          // Altimeter/condition
+                          buildCard(
+                            Column(
+                              children: [
+                                Text(
+                                  "Altimeter",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: Theme.of(context).dividerColor,
+                                      ),
+                                ),
+                                Text(
+                                  metarStore.metar != null
+                                      ? "${metarStore.metar!.altimeter} ${metarStore.metar!.altIsInHg ? "inHg" : "hPa"}"
+                                      : "Altimeter",
+                                ),
+                                const SizedBox(height: 8.0),
+                                Text(
+                                  "Condition",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: Theme.of(context).dividerColor,
+                                      ),
+                                ),
+                                Text(
+                                  metarStore.metar != null ? metarStore.metar!.flightRules : "Condition",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: metarStore.metar != null
+                                            ? metarStore.metar!.flightRules == "VFR"
+                                                ? Colors.green
+                                                : metarStore.metar!.flightRules == "MVFR"
+                                                    ? Colors.blue
+                                                    : metarStore.metar!.flightRules == "IFR"
+                                                        ? Colors.red
+                                                        : metarStore.metar!.flightRules == "LIFR"
+                                                            ? Colors.purple
+                                                            : Theme.of(context).textTheme.bodyMedium?.color
+                                            : Theme.of(context).textTheme.bodyMedium?.color,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
 
                     // Cloud layers
