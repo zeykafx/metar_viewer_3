@@ -153,9 +153,11 @@ class BestRunwayForWinds extends StatelessWidget {
     // the angle for the site goes from 0 to 18, so if we need more than 18 we use the opposite runway
     // (e.g. if we need 22, we use 4)
     int angleForSite = angle ~/ 10;
+    print("ANGLE FOR RUNWAY (NOT CHANGED): $angleForSite");
     if (angleForSite > 18) {
-      angleForSite = 36 - angleForSite;
+      angleForSite = angleForSite - 18;
     }
+    print("ANGLE FOR RUNWAY: $angleForSite");
     return "https://metar-taf.com/images/rwy/day-$angleForSite.svg";
   }
 
