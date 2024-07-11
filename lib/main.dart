@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/cupertino.dart' as Cup;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -61,10 +62,14 @@ Future<void> openDb() async {
   }
 
   if (Platform.isWindows) {
-    print("opening database with ffi");
+    if (kDebugMode) {
+      print("opening database with ffi");
+    }
     database = await databaseFactoryFfi.openDatabase(dbPath);
   } else {
-    print("opening database");
+    if (kDebugMode) {
+      print("opening database");
+    }
     database = await openDatabase(dbPath);
   }
 }

@@ -51,6 +51,7 @@ dependencies:
       url: https://github.com/alex27riva/time_formatter.git
       ref: master
   sqflite_common_ffi: ^2.1.1+1
+  dio: ^5.5.0+1
 
 dev_dependencies:
   flutter_test:

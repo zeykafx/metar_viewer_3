@@ -15,29 +15,6 @@ class AirportInfo extends StatefulWidget {
 }
 
 class _AirportInfoState extends State<AirportInfo> {
-  String frequencies = "";
-  String runways = "";
-
-  void setupFrequenciesAndRunways() {
-    for (Frequency frequency in widget.airport.frequencies) {
-      frequencies += "${frequency.name} ${frequency.frequency}\n";
-    }
-    // trim the tailing newline
-    frequencies = frequencies.trim();
-
-    for (Runway runway in widget.airport.runways) {
-      runways += "${runway.name} ${runway.length}ft x ${runway.width}ft\n";
-    }
-    runways = runways.trim();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    setupFrequenciesAndRunways();
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQuery = MediaQuery.of(context);
@@ -62,7 +39,12 @@ class _AirportInfoState extends State<AirportInfo> {
                         children: [
                           // Airport name, state, type
                           Text(
-                              "${widget.airport.icao} - ${widget.airport.facility}, ${widget.airport.state} (${widget.airport.type})"),
+                            "${widget.airport.icao} - ${widget.airport.facility}, ${widget.airport.state} (${widget.airport.type})",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                           // Airport elevation
                           Text(
                             "Elevation",
@@ -80,31 +62,35 @@ class _AirportInfoState extends State<AirportInfo> {
                           // Airport runways
                           for (Runway runway in widget.airport.runways)
                             RichText(
-                                text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: runway.name,
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                                TextSpan(
-                                  text: ": ",
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: Theme.of(context).dividerColor,
-                                      ),
-                                ),
-                                TextSpan(text: "${runway.length}ft", style: Theme.of(context).textTheme.bodyMedium),
-                                TextSpan(
-                                  text: " x ",
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: Theme.of(context).dividerColor,
-                                      ),
-                                ),
-                                TextSpan(
-                                  text: "${runway.width}ft",
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ],
-                            )),
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: runway.name,
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                  TextSpan(
+                                    text: ": ",
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          color: Theme.of(context).dividerColor,
+                                        ),
+                                  ),
+                                  TextSpan(
+                                    text: "${runway.length}ft",
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                  TextSpan(
+                                    text: " x ",
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          color: Theme.of(context).dividerColor,
+                                        ),
+                                  ),
+                                  TextSpan(
+                                    text: "${runway.width}ft",
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -120,7 +106,74 @@ class _AirportInfoState extends State<AirportInfo> {
               ),
             ],
           ),
-        )
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 28.0,
+                vertical: 22.0,
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    "Frequencies",
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).dividerColor,
+                        ),
+                  ),
+                  // ground
+                  if (widget.airport.gndFreq.isNotEmpty)
+                    Text(
+                      'Ground: ${widget.airport.gndFreq} MHz',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  // tower
+                  if (widget.airport.towerFreq.isNotEmpty)
+                    Text(
+                      'Tower: ${widget.airport.towerFreq} MHz',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  // ctaf
+                  if (widget.airport.ctafFreq.isNotEmpty)
+                    Text(
+                      'CTAF: ${widget.airport.ctafFreq} MHz',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  // asos
+                  if (widget.airport.asosFreq.isNotEmpty)
+                    Text(
+                      'ASOS: ${widget.airport.asosFreq} MHz',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+
+                  for (Frequency frequency in widget.airport.frequencies)
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: frequency.name,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          TextSpan(
+                            text: ": ",
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Theme.of(context).dividerColor,
+                                ),
+                          ),
+                          TextSpan(
+                            text: "${frequency.frequency} MHz",
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -150,16 +203,19 @@ class BestRunwayForWinds extends StatelessWidget {
     int bestRunwayAngle = 0;
     String bestRunwayUrl = "";
 
+    int oppositeWindDirection = (180 - metar.windDirection).abs();
+
     for (Runway runway in airport.runways) {
       var (int angleRunway0, int angleRunway1) = runway.angle;
       var (int angleCurrentBestRunway0, int angleCurrentBestRunway1) = bestRunwayForWinds.angle;
 
-      // find the runway that is closest to the wind direction
-      // the two angles are the two ends of the runway, use that to find the best runway
-      int diffRunway0 = (metar.windDirection - angleRunway0).abs();
-      int diffRunway1 = (metar.windDirection - angleRunway1).abs();
-      int diffCurrentBestRunway0 = (metar.windDirection - angleCurrentBestRunway0).abs();
-      int diffCurrentBestRunway1 = (metar.windDirection - angleCurrentBestRunway1).abs();
+      // find the runway that is at the opposite of the wind direction, e.g. if the wind comes from
+      // 180, we want to find the runway that is at 360
+
+      int diffRunway0 = (oppositeWindDirection - angleRunway0).abs();
+      int diffRunway1 = (oppositeWindDirection - angleRunway1).abs();
+      int diffCurrentBestRunway0 = (oppositeWindDirection - angleCurrentBestRunway0).abs();
+      int diffCurrentBestRunway1 = (oppositeWindDirection - angleCurrentBestRunway1).abs();
 
       if (diffRunway0 <= diffCurrentBestRunway0) {
         bestRunwayForWinds = runway;
@@ -167,7 +223,8 @@ class BestRunwayForWinds extends StatelessWidget {
         // in order to find it, we have an optional 0 if there is only one digit
         // we also divide the angle by 10 to get the runway number,
         // and we can also have an optional L or R at the end
-        RegExp runwayNameRegex = RegExp("[0]?${angleRunway0 ~/ 10}[L|R]?");
+        RegExp runwayNameRegex = RegExp("[0]?${angleRunway1 ~/ 10}[L|R]?");
+        // NOTE: I use angleRunway1 here because runway 22 is pointing towards 220°
         bestRunwayName = runwayNameRegex.stringMatch(runway.name) ?? "";
 
         // set the runway angle, this is used to rotate the runway image
@@ -175,7 +232,7 @@ class BestRunwayForWinds extends StatelessWidget {
       } else if (diffRunway1 <= diffCurrentBestRunway1) {
         bestRunwayForWinds = runway;
 
-        RegExp runwayNameRegex = RegExp("[0]?${angleRunway1 ~/ 10}[LR]?");
+        RegExp runwayNameRegex = RegExp("[0]?${angleRunway0 ~/ 10}[LR]?");
         bestRunwayName = runwayNameRegex.stringMatch(runway.name) ?? "";
 
         bestRunwayAngle = angleRunway1;
@@ -187,22 +244,23 @@ class BestRunwayForWinds extends StatelessWidget {
     return Card(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: 28.0,
-          vertical: 18.0,
+          horizontal: 20.0,
+          vertical: 10.0,
         ),
         child: Column(
           children: [
-            Text(
+            const Text(
               "Best runway for winds",
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).dividerColor,
-                  ),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
             Text(
-              "$bestRunwayName ${bestRunwayForWinds.length}ft x ${bestRunwayForWinds.width}ft",
+              "$bestRunwayName - ${bestRunwayForWinds.length}ft x ${bestRunwayForWinds.width}ft",
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15.0),
+              padding: const EdgeInsets.symmetric(vertical: 3.0),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -226,7 +284,7 @@ class BestRunwayForWinds extends StatelessWidget {
                     child: Icon(
                       Icons.arrow_right_alt_rounded,
                       size: 100,
-                      color: Theme.of(context).dividerColor.withOpacity(0.8),
+                      color: Theme.of(context).dividerColor.withOpacity(1),
                     ),
                   ),
                 ],

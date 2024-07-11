@@ -46,8 +46,8 @@ class Metar {
     required this.remarks,
   });
 
-  static Metar fromJson(String jsonString, Airport airport) {
-    Map<String, dynamic> json = jsonDecode(jsonString);
+  static Metar fromJson(Map<String, dynamic> json, Airport airport) {
+    // Map<String, dynamic> json = jsonDecode(jsonString);
 
     String raw = json['raw'] ?? "";
     String summary = json['summary'] ?? "";
