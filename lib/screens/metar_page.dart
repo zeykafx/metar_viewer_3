@@ -143,22 +143,6 @@ class _MetarPageState extends State<MetarPage> {
                                 Expanded(
                                   flex: 4,
                                   child: SearchAnchor.bar(
-                                    // searchController: controller,
-                                    // builder: (BuildContext context, SearchController controller) {
-                                    //   return SearchBar(
-                                    //     controller: controller,
-                                    //     padding: const MaterialStatePropertyAll<EdgeInsets>(
-                                    //       EdgeInsets.symmetric(horizontal: 16.0),
-                                    //     ),
-                                    //     onTap: () {
-                                    //       controller.openView();
-                                    //     },
-                                    //     onChanged: (_) {
-                                    //       controller.openView();
-                                    //     },
-                                    //     leading: const Icon(Icons.search),
-                                    //   );
-                                    // },
                                     isFullScreen: MediaQuery.of(context).size.width < 700,
                                     suggestionsBuilder: (
                                       BuildContext context,

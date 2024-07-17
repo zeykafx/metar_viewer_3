@@ -1,28 +1,28 @@
 import 'package:cross_local_storage/cross_local_storage.dart';
-import "package:flutter/foundation.dart";
-import "package:flutter/material.dart";
-import "package:metar_viewer_3/api/avwx.dart";
-import "package:metar_viewer_3/models/airport.dart";
-import "package:metar_viewer_3/models/metar.dart";
-import "package:mobx/mobx.dart";
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:metar_viewer_3/api/avwx.dart';
+import 'package:metar_viewer_3/main.dart';
+import 'package:mobx/mobx.dart';
 
-import "../main.dart";
+import '../models/airport.dart';
+import '../models/taf.dart';
 
-part 'metar_store.g.dart';
+part 'taf_store.g.dart';
 
-class MetarStore = _MetarStore with _$MetarStore;
+class TafStore = _TafStore with _$TafStore;
 
-abstract class _MetarStore with Store {
+abstract class _TafStore with Store {
   AvwxApi avwxApi = AvwxApi();
 
   @observable
-  Metar? metar;
+  Taf? taf;
 
   @computed
-  bool get hasMetar => metar != null;
+  bool get hasTaf => taf != null;
 
   @computed
-  DateTime? get lastUpdated => metar?.time;
+  DateTime? get lastUpdated => taf?.time;
 
   @observable
   bool hasAlert = false;
@@ -35,17 +35,17 @@ abstract class _MetarStore with Store {
   List<Airport> searchHistory = [];
 
   @action
-  Future<void> fetchMetar(Airport airport) async {
+  Future<void> fetchTaf(Airport airport) async {
     try {
       isLoading = true;
 
-      var (Metar metarValue, bool cached) = await avwxApi.getMetar(airport);
-      metar = metarValue;
+      var (Taf tafValue, bool cached) = await avwxApi.getTaf(airport);
+      taf = tafValue;
       isLoading = false;
 
       if (cached) {
         int timeDiff = 3 - DateTime.now().difference(lastUpdated!).inMinutes;
-        alertMessage = "The metar displayed is cached, it will refresh in $timeDiff minute${timeDiff > 1 ? "s" : ""}";
+        alertMessage = "The taf displayed is cached, it will refresh in $timeDiff minute${timeDiff > 1 ? "s" : ""}";
         hasAlert = true;
       } else {
         alertMessage = "";
@@ -57,7 +57,7 @@ abstract class _MetarStore with Store {
         print(s);
       }
 
-      alertMessage = "Failed to fetch metar for ${airport.icao}";
+      alertMessage = "Failed to fetch taf for ${airport.icao}";
       hasAlert = true;
       isLoading = false;
     }
@@ -71,7 +71,7 @@ abstract class _MetarStore with Store {
       LocalStorageInterface pref = await LocalStorage.getInstance();
       // save the new search history to the prefs
       await pref.setStringList(
-        "searchHistory",
+        "tafSearchHistory",
         searchHistory.map((e) => e.icao).toList(),
       );
       if (kDebugMode) {
@@ -87,7 +87,7 @@ abstract class _MetarStore with Store {
       LocalStorageInterface pref = await LocalStorage.getInstance();
       // save the new search history to the prefs
       await pref.setStringList(
-        "searchHistory",
+        "tafSearchHistory",
         searchHistory.map((e) => e.icao).toList(),
       );
       if (kDebugMode) {
@@ -99,7 +99,7 @@ abstract class _MetarStore with Store {
   @action
   Future<void> getSearchHistoryFromPrefs() async {
     LocalStorageInterface pref = await LocalStorage.getInstance();
-    List<String>? history = pref.getStringList("searchHistory");
+    List<String>? history = pref.getStringList("tafSearchHistory");
     if (history != null) {
       for (String icao in history) {
         // wait until database is not null
@@ -121,7 +121,7 @@ abstract class _MetarStore with Store {
     }
 
     if (kDebugMode) {
-      print("loaded metar search history");
+      print("loaded taf search history");
     }
   }
 
@@ -171,7 +171,7 @@ abstract class _MetarStore with Store {
           },
         ),
         onTap: () {
-          fetchMetar(airport);
+          fetchTaf(airport);
           addToSearchHistory(airport);
           controller.closeView(airport.icao);
           FocusScope.of(context).unfocus();
@@ -214,7 +214,7 @@ abstract class _MetarStore with Store {
         title: Text("${airport.icao} - ${airport.facility}"),
         subtitle: Text(airport.state),
         onTap: () {
-          fetchMetar(airport);
+          fetchTaf(airport);
           addToSearchHistory(airport);
           controller.closeView(airport.icao);
           FocusScope.of(context).unfocus();

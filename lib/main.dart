@@ -11,7 +11,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import 'screens/metar.dart';
+import 'screens/metar_page.dart';
 
 Database? database;
 
