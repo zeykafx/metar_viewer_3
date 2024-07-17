@@ -17,6 +17,7 @@ class TafPage extends StatefulWidget {
 class _TafPageState extends State<TafPage> {
   TafStore tafStore = TafStore();
   SettingsStore settingsStore = SettingsStore();
+  int MIN_WIDTH = 500;
 
   Map<String, String> typeToDescription = {
     "FROM": "Changes expected from a date/hour to another date/hour",
@@ -118,11 +119,12 @@ class _TafPageState extends State<TafPage> {
                             child: Padding(
                               padding: const EdgeInsets.all(14.0),
                               child: Flex(
-                                direction: mediaQuery.size.width > 500 ? Axis.horizontal : Axis.vertical,
+                                direction: mediaQuery.size.width > MIN_WIDTH ? Axis.horizontal : Axis.vertical,
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment:
-                                    mediaQuery.size.width > 500 ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                                crossAxisAlignment: mediaQuery.size.width > MIN_WIDTH
+                                    ? CrossAxisAlignment.center
+                                    : CrossAxisAlignment.start,
                                 children: [
                                   // Airport name
                                   Column(
@@ -215,19 +217,33 @@ class _TafPageState extends State<TafPage> {
                             ),
                           ),
 
-                          // taf forecasts
-                          if (tafStore.taf != null) ...[
-                            const SizedBox(height: 16.0),
+                          const SizedBox(height: 16.0),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              "Forecasts",
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+
+                          if (tafStore.taf == null) ...[
                             const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                "Forecasts",
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
+                              padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 30),
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: 500,
+                                child: Card(
+                                  child: Center(child: Text("Forecasts")),
                                 ),
                               ),
                             ),
+                          ],
+
+                          // taf forecasts
+                          if (tafStore.taf != null) ...[
                             for (var forecast in tafStore.taf!.forecast)
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 30),

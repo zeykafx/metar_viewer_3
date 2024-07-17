@@ -20,6 +20,8 @@ class _MetarPageState extends State<MetarPage> {
   MetarStore metarStore = MetarStore();
   SettingsStore settingsStore = SettingsStore();
 
+  int MIN_WIDTH = 400;
+
   @override
   void initState() {
     super.initState();
@@ -97,11 +99,12 @@ class _MetarPageState extends State<MetarPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(14.0),
                             child: Flex(
-                              direction: mediaQuery.size.width > 500 ? Axis.horizontal : Axis.vertical,
+                              direction: mediaQuery.size.width > MIN_WIDTH ? Axis.horizontal : Axis.vertical,
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment:
-                                  mediaQuery.size.width > 500 ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                              crossAxisAlignment: mediaQuery.size.width > MIN_WIDTH
+                                  ? CrossAxisAlignment.center
+                                  : CrossAxisAlignment.start,
                               children: [
                                 // Airport name, winds, altimeter
                                 Column(
@@ -222,7 +225,7 @@ class _MetarPageState extends State<MetarPage> {
                         // Temperature/dewpoint, winds/vis, altimeter/condition
                         IntrinsicHeight(
                           child: Flex(
-                            direction: mediaQuery.size.width > 500 ? Axis.horizontal : Axis.vertical,
+                            direction: mediaQuery.size.width > MIN_WIDTH ? Axis.horizontal : Axis.vertical,
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -233,7 +236,7 @@ class _MetarPageState extends State<MetarPage> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      "Temperature",
+                                      mediaQuery.size.width < 600 ? "Temp" : "Temperature",
                                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                             color: Theme.of(context).dividerColor,
                                           ),
@@ -248,7 +251,7 @@ class _MetarPageState extends State<MetarPage> {
                                     const SizedBox(height: 8.0),
                                     Flexible(
                                       child: Text(
-                                        "Dewpoint",
+                                        mediaQuery.size.width < 600 ? "Dew" : "Dewpoint",
                                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                               color: Theme.of(context).dividerColor,
                                             ),
@@ -363,7 +366,7 @@ class _MetarPageState extends State<MetarPage> {
                         // Cloud layers
                         IntrinsicHeight(
                           child: Flex(
-                            direction: mediaQuery.size.width > 500 ? Axis.horizontal : Axis.vertical,
+                            direction: mediaQuery.size.width > MIN_WIDTH ? Axis.horizontal : Axis.vertical,
                             children: [
                               // cloud layers
                               Visibility(
@@ -449,19 +452,29 @@ class _MetarPageState extends State<MetarPage> {
                         ),
 
                         // airport info
-                        if (metarStore.metar != null) ...[
-                          const SizedBox(height: 16.0),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: Text(
-                              "Airport Info",
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                        const SizedBox(height: 16.0),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            "Airport Info",
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 8.0),
+                        ),
+                        const SizedBox(height: 8.0),
+                        if (metarStore.metar == null) ...[
+                          const SizedBox(
+                            width: double.infinity,
+                            height: 300,
+                            child: Card(
+                              child: Center(child: Text("Airport Info")),
+                            ),
+                          ),
+                        ],
+
+                        if (metarStore.metar != null) ...[
                           AirportInfo(
                             airport: metarStore.metar!.airport,
                             metar: metarStore.metar!,

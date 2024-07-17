@@ -15,6 +15,8 @@ class AirportInfo extends StatefulWidget {
 }
 
 class _AirportInfoState extends State<AirportInfo> {
+  int MIN_WIDTH = 500;
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQuery = MediaQuery.of(context);
@@ -23,10 +25,10 @@ class _AirportInfoState extends State<AirportInfo> {
         IntrinsicHeight(
           child: Flex(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            direction: mediaQuery.size.width > 600 ? Axis.horizontal : Axis.vertical,
+            direction: mediaQuery.size.width > MIN_WIDTH ? Axis.horizontal : Axis.vertical,
             children: [
               Flexible(
-                flex: mediaQuery.size.width > 600 ? 1 : 0,
+                flex: mediaQuery.size.width > MIN_WIDTH ? 1 : 0,
                 child: SizedBox(
                   width: double.infinity,
                   child: Card(
