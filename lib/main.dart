@@ -1,17 +1,20 @@
 import 'dart:io';
 
+import 'package:cross_local_storage/cross_local_storage.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/cupertino.dart' as Cup;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:metar_viewer_3/screens/taf_page.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:metar_viewer_3/screens/settings/settings_page.dart';
+import 'package:metar_viewer_3/screens/settings/settings_store.dart';
+import 'package:metar_viewer_3/screens/taf/taf_page.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
-import 'screens/metar_page.dart';
+import 'screens/metar/metar_page.dart';
 
 Database? database;
 
@@ -21,7 +24,7 @@ Future main() async {
   openDb();
 
   await dotenv.load(fileName: ".env");
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 Future<void> openDb() async {
@@ -95,8 +98,39 @@ ThemeData darkTheme(ColorScheme? darkColorScheme) {
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends Cup.StatefulWidget {
+  MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+
+  // allow access to the state from anywhere in the app, which is useful for changing the theme
+  static _MyAppState of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>()!;
+}
+
+class _MyAppState extends State<MyApp> {
+  late LocalStorageInterface pref;
+  ThemeMode themeMode = ThemeMode.system;
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  Future<void> init() async {
+    pref = await LocalStorage.getInstance();
+    bool? darkMode = pref.getBool('darkMode');
+    if (darkMode != null) {
+      themeMode = darkMode ? ThemeMode.dark : ThemeMode.light;
+    }
+  }
+
+  void changeThemeMode(ThemeMode mode) {
+    setState(() {
+      themeMode = mode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +142,7 @@ class MyApp extends StatelessWidget {
         title: 'Metar Viewer',
         theme: lightTheme(lightColorScheme),
         darkTheme: darkTheme(darkColorScheme),
-        themeMode: ThemeMode.system,
+        themeMode: themeMode,
         home: const HomePage(),
       );
     });
@@ -125,11 +159,27 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int currentPageIndex = 0;
   late PageController pageController;
+  SettingsStore settingsStore = SettingsStore();
 
   @override
   void initState() {
     super.initState();
     pageController = PageController();
+    initSettingsStore();
+  }
+
+  Future<void> initSettingsStore() async {
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (settingsStore.startPage) {
+        if (kDebugMode) {
+          print("TAF Page is the start page");
+        }
+        setState(() {
+          currentPageIndex = 1;
+          pageController.jumpToPage(currentPageIndex);
+        });
+      }
+    });
   }
 
   @override
@@ -150,6 +200,18 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Metar Viewer'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SettingsPage(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.settings),
+          ),
+        ],
       ),
       body: PageView(
         controller: pageController,

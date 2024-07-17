@@ -3,10 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:metar_viewer_3/api/avwx.dart';
 import 'package:metar_viewer_3/main.dart';
+import 'package:metar_viewer_3/models/airport.dart';
+import 'package:metar_viewer_3/models/taf.dart';
 import 'package:mobx/mobx.dart';
-
-import '../models/airport.dart';
-import '../models/taf.dart';
 
 part 'taf_store.g.dart';
 
@@ -61,6 +60,23 @@ abstract class _TafStore with Store {
       hasAlert = true;
       isLoading = false;
     }
+  }
+
+  @action
+  Future<Airport> getAirportFromIcao(String icao) async {
+    // wait until database is not null
+    while (database == null) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    List<Map<String, Object?>> res = await database!.query(
+      "NatFixes",
+      where: "NavId LIKE ?",
+      whereArgs: ["%$icao%"],
+    );
+
+    Airport airport = Airport.fromDb(res[0]);
+    return airport;
   }
 
   @action
@@ -191,7 +207,7 @@ abstract class _TafStore with Store {
     }
     List<Map<String, Object?>> res = await database!.query(
       "NatFixes",
-      where: "NavId LIKE ?",
+      where: "NavId LIKE ? AND Type = 'AIRPORT'",
       whereArgs: ["%${controller.text.toUpperCase()}%"],
     );
 
@@ -199,7 +215,7 @@ abstract class _TafStore with Store {
       // if no airports have the search query in their icao, search by facility name
       res = await database!.query(
         "NatFixes",
-        where: "Facility LIKE ?",
+        where: "Facility LIKE ? AND Type = 'AIRPORT'",
         whereArgs: ["%${controller.text.toUpperCase()}%"],
       );
     }

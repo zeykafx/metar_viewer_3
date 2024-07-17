@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'taf_store.dart';
+part of 'metar_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,38 +8,38 @@ part of 'taf_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
-mixin _$TafStore on _TafStore, Store {
-  Computed<bool>? _$hasTafComputed;
+mixin _$MetarStore on _MetarStore, Store {
+  Computed<bool>? _$hasMetarComputed;
 
   @override
-  bool get hasTaf => (_$hasTafComputed ??=
-          Computed<bool>(() => super.hasTaf, name: '_TafStore.hasTaf'))
+  bool get hasMetar => (_$hasMetarComputed ??=
+          Computed<bool>(() => super.hasMetar, name: '_MetarStore.hasMetar'))
       .value;
   Computed<DateTime?>? _$lastUpdatedComputed;
 
   @override
   DateTime? get lastUpdated =>
       (_$lastUpdatedComputed ??= Computed<DateTime?>(() => super.lastUpdated,
-              name: '_TafStore.lastUpdated'))
+              name: '_MetarStore.lastUpdated'))
           .value;
 
-  late final _$tafAtom = Atom(name: '_TafStore.taf', context: context);
+  late final _$metarAtom = Atom(name: '_MetarStore.metar', context: context);
 
   @override
-  Taf? get taf {
-    _$tafAtom.reportRead();
-    return super.taf;
+  Metar? get metar {
+    _$metarAtom.reportRead();
+    return super.metar;
   }
 
   @override
-  set taf(Taf? value) {
-    _$tafAtom.reportWrite(value, super.taf, () {
-      super.taf = value;
+  set metar(Metar? value) {
+    _$metarAtom.reportWrite(value, super.metar, () {
+      super.metar = value;
     });
   }
 
   late final _$hasAlertAtom =
-      Atom(name: '_TafStore.hasAlert', context: context);
+      Atom(name: '_MetarStore.hasAlert', context: context);
 
   @override
   bool get hasAlert {
@@ -55,7 +55,7 @@ mixin _$TafStore on _TafStore, Store {
   }
 
   late final _$alertMessageAtom =
-      Atom(name: '_TafStore.alertMessage', context: context);
+      Atom(name: '_MetarStore.alertMessage', context: context);
 
   @override
   String get alertMessage {
@@ -71,7 +71,7 @@ mixin _$TafStore on _TafStore, Store {
   }
 
   late final _$isLoadingAtom =
-      Atom(name: '_TafStore.isLoading', context: context);
+      Atom(name: '_MetarStore.isLoading', context: context);
 
   @override
   bool get isLoading {
@@ -87,7 +87,7 @@ mixin _$TafStore on _TafStore, Store {
   }
 
   late final _$searchHistoryAtom =
-      Atom(name: '_TafStore.searchHistory', context: context);
+      Atom(name: '_MetarStore.searchHistory', context: context);
 
   @override
   List<Airport> get searchHistory {
@@ -102,16 +102,25 @@ mixin _$TafStore on _TafStore, Store {
     });
   }
 
-  late final _$fetchTafAsyncAction =
-      AsyncAction('_TafStore.fetchTaf', context: context);
+  late final _$fetchMetarAsyncAction =
+      AsyncAction('_MetarStore.fetchMetar', context: context);
 
   @override
-  Future<void> fetchTaf(Airport airport) {
-    return _$fetchTafAsyncAction.run(() => super.fetchTaf(airport));
+  Future<void> fetchMetar(Airport airport) {
+    return _$fetchMetarAsyncAction.run(() => super.fetchMetar(airport));
+  }
+
+  late final _$getAirportFromIcaoAsyncAction =
+      AsyncAction('_MetarStore.getAirportFromIcao', context: context);
+
+  @override
+  Future<Airport> getAirportFromIcao(String icao) {
+    return _$getAirportFromIcaoAsyncAction
+        .run(() => super.getAirportFromIcao(icao));
   }
 
   late final _$addToSearchHistoryAsyncAction =
-      AsyncAction('_TafStore.addToSearchHistory', context: context);
+      AsyncAction('_MetarStore.addToSearchHistory', context: context);
 
   @override
   Future<void> addToSearchHistory(Airport airport) {
@@ -120,7 +129,7 @@ mixin _$TafStore on _TafStore, Store {
   }
 
   late final _$removeFromSearchHistoryAsyncAction =
-      AsyncAction('_TafStore.removeFromSearchHistory', context: context);
+      AsyncAction('_MetarStore.removeFromSearchHistory', context: context);
 
   @override
   Future<void> removeFromSearchHistory(Airport airport) {
@@ -129,7 +138,7 @@ mixin _$TafStore on _TafStore, Store {
   }
 
   late final _$getSearchHistoryFromPrefsAsyncAction =
-      AsyncAction('_TafStore.getSearchHistoryFromPrefs', context: context);
+      AsyncAction('_MetarStore.getSearchHistoryFromPrefs', context: context);
 
   @override
   Future<void> getSearchHistoryFromPrefs() {
@@ -138,7 +147,7 @@ mixin _$TafStore on _TafStore, Store {
   }
 
   late final _$getSuggestionsAsyncAction =
-      AsyncAction('_TafStore.getSuggestions', context: context);
+      AsyncAction('_MetarStore.getSuggestions', context: context);
 
   @override
   Future<Iterable<Widget>> getSuggestions(
@@ -147,30 +156,30 @@ mixin _$TafStore on _TafStore, Store {
         .run(() => super.getSuggestions(controller, context, mounted));
   }
 
-  late final _$_TafStoreActionController =
-      ActionController(name: '_TafStore', context: context);
+  late final _$_MetarStoreActionController =
+      ActionController(name: '_MetarStore', context: context);
 
   @override
   Iterable<Widget> getHistoryList(
       SearchController controller, BuildContext context, bool mounted) {
-    final _$actionInfo = _$_TafStoreActionController.startAction(
-        name: '_TafStore.getHistoryList');
+    final _$actionInfo = _$_MetarStoreActionController.startAction(
+        name: '_MetarStore.getHistoryList');
     try {
       return super.getHistoryList(controller, context, mounted);
     } finally {
-      _$_TafStoreActionController.endAction(_$actionInfo);
+      _$_MetarStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   String toString() {
     return '''
-taf: ${taf},
+metar: ${metar},
 hasAlert: ${hasAlert},
 alertMessage: ${alertMessage},
 isLoading: ${isLoading},
 searchHistory: ${searchHistory},
-hasTaf: ${hasTaf},
+hasMetar: ${hasMetar},
 lastUpdated: ${lastUpdated}
     ''';
   }

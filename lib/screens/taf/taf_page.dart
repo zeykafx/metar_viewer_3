@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:metar_viewer_3/api/avwx.dart';
-import 'package:metar_viewer_3/screens/taf_store.dart';
+import 'package:metar_viewer_3/models/airport.dart';
+import 'package:metar_viewer_3/screens/settings/settings_store.dart';
+import 'package:metar_viewer_3/screens/taf/taf_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:time_formatter/time_formatter.dart';
 
@@ -14,6 +16,15 @@ class TafPage extends StatefulWidget {
 
 class _TafPageState extends State<TafPage> {
   TafStore tafStore = TafStore();
+  SettingsStore settingsStore = SettingsStore();
+
+  Map<String, String> typeToDescription = {
+    "FROM": "Changes expected from a date/hour to another date/hour",
+    "BECMG": "Gradual changes expected from a date/hour to another date/hour",
+    "TEMPO": "Temporary changes expected from a date/hour to another date/hour",
+    "PROB": "Changes have a probability of happening",
+    "RMK": "Remark",
+  };
 
   @override
   void initState() {
@@ -32,6 +43,19 @@ class _TafPageState extends State<TafPage> {
     });
 
     tafStore.getSearchHistoryFromPrefs();
+    init();
+  }
+
+  Future<void> init() async {
+    Future.delayed(const Duration(milliseconds: 100), () async {
+      if (settingsStore.fetchTafOnStartup) {
+        Airport apt = await tafStore.getAirportFromIcao(settingsStore.defaultTafAirport!);
+        if (kDebugMode) {
+          print("Fetching default airport taf");
+        }
+        tafStore.fetchTaf(apt);
+      }
+    });
   }
 
   Widget buildCard(Widget content) {
@@ -94,11 +118,11 @@ class _TafPageState extends State<TafPage> {
                             child: Padding(
                               padding: const EdgeInsets.all(14.0),
                               child: Flex(
-                                direction: mediaQuery.size.width > 600 ? Axis.horizontal : Axis.vertical,
+                                direction: mediaQuery.size.width > 500 ? Axis.horizontal : Axis.vertical,
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment:
-                                    mediaQuery.size.width > 600 ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                                    mediaQuery.size.width > 500 ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                                 children: [
                                   // Airport name
                                   Column(
@@ -223,7 +247,22 @@ class _TafPageState extends State<TafPage> {
                                                   color: Theme.of(context).dividerColor,
                                                 ),
                                           ),
-                                          Text(forecast.type),
+                                          Tooltip(
+                                            message: typeToDescription[forecast.type] ?? "Description",
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Text(forecast.type),
+                                                const SizedBox(width: 3.0),
+                                                Icon(
+                                                  Icons.info,
+                                                  size: 13.0,
+                                                  color: Theme.of(context).dividerColor,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                           const SizedBox(height: 8.0),
                                           Text(
                                             "Summary",

@@ -1,11 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:metar_viewer_3/models/airport.dart';
 import 'package:metar_viewer_3/screens/components/airport_info.dart';
+import 'package:metar_viewer_3/screens/metar/metar_store.dart';
+import 'package:metar_viewer_3/screens/settings/settings_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:time_formatter/time_formatter.dart';
 import "package:vector_math/vector_math.dart" as vector;
-
-import 'metar_store.dart';
 
 class MetarPage extends StatefulWidget {
   const MetarPage({super.key});
@@ -16,6 +18,7 @@ class MetarPage extends StatefulWidget {
 
 class _MetarPageState extends State<MetarPage> {
   MetarStore metarStore = MetarStore();
+  SettingsStore settingsStore = SettingsStore();
 
   @override
   void initState() {
@@ -34,6 +37,19 @@ class _MetarPageState extends State<MetarPage> {
     });
 
     metarStore.getSearchHistoryFromPrefs();
+    init();
+  }
+
+  Future<void> init() async {
+    Future.delayed(const Duration(milliseconds: 100), () async {
+      if (settingsStore.fetchMetarOnStartup) {
+        Airport apt = await metarStore.getAirportFromIcao(settingsStore.defaultMetarAirport!);
+        if (kDebugMode) {
+          print("Fetching default airport metar");
+        }
+        metarStore.fetchMetar(apt);
+      }
+    });
   }
 
   // final SearchController controller = SearchController();
@@ -81,11 +97,11 @@ class _MetarPageState extends State<MetarPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(14.0),
                             child: Flex(
-                              direction: mediaQuery.size.width > 600 ? Axis.horizontal : Axis.vertical,
+                              direction: mediaQuery.size.width > 500 ? Axis.horizontal : Axis.vertical,
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment:
-                                  mediaQuery.size.width > 600 ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                                  mediaQuery.size.width > 500 ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                               children: [
                                 // Airport name, winds, altimeter
                                 Column(
@@ -206,7 +222,7 @@ class _MetarPageState extends State<MetarPage> {
                         // Temperature/dewpoint, winds/vis, altimeter/condition
                         IntrinsicHeight(
                           child: Flex(
-                            direction: mediaQuery.size.width > 600 ? Axis.horizontal : Axis.vertical,
+                            direction: mediaQuery.size.width > 500 ? Axis.horizontal : Axis.vertical,
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -347,7 +363,7 @@ class _MetarPageState extends State<MetarPage> {
                         // Cloud layers
                         IntrinsicHeight(
                           child: Flex(
-                            direction: mediaQuery.size.width > 600 ? Axis.horizontal : Axis.vertical,
+                            direction: mediaQuery.size.width > 500 ? Axis.horizontal : Axis.vertical,
                             children: [
                               // cloud layers
                               Visibility(

@@ -100,9 +100,6 @@ class AvwxApi {
     }
 
     if (response.statusCode == 200) {
-      if (kDebugMode) {
-        print(response.data);
-      }
       taf = Taf.fromJson(response.data);
       tafCachedAirport[icao] = (airport, currentTime, taf!);
       return (taf!, false);
