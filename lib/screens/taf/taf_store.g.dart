@@ -15,13 +15,6 @@ mixin _$TafStore on _TafStore, Store {
   bool get hasTaf => (_$hasTafComputed ??=
           Computed<bool>(() => super.hasTaf, name: '_TafStore.hasTaf'))
       .value;
-  Computed<DateTime?>? _$lastUpdatedComputed;
-
-  @override
-  DateTime? get lastUpdated =>
-      (_$lastUpdatedComputed ??= Computed<DateTime?>(() => super.lastUpdated,
-              name: '_TafStore.lastUpdated'))
-          .value;
 
   late final _$tafAtom = Atom(name: '_TafStore.taf', context: context);
 
@@ -179,8 +172,7 @@ hasAlert: ${hasAlert},
 alertMessage: ${alertMessage},
 isLoading: ${isLoading},
 searchHistory: ${searchHistory},
-hasTaf: ${hasTaf},
-lastUpdated: ${lastUpdated}
+hasTaf: ${hasTaf}
     ''';
   }
 }

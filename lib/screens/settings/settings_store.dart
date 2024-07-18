@@ -24,10 +24,15 @@ abstract class _SettingsStore with Store {
 
     fetchTafOnStartup = prefs.getBool("fetchTafOnStartup") ?? false;
     defaultTafAirport = prefs.getString("defaultTafAirport");
+
+    initialized = true;
   }
 
   @observable
   bool startPage = false; // false for metar, true for taf
+
+  @observable
+  bool initialized = false;
 
   @action
   void setStartPage(bool val) {

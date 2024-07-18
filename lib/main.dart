@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart' as Cup;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:metar_viewer_3/screens/settings/settings_page.dart';
@@ -22,6 +23,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   openDb();
+  Animate.restartOnHotReload = true;
 
   await dotenv.load(fileName: ".env");
   runApp(MyApp());
@@ -169,22 +171,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> initSettingsStore() async {
-    Future.delayed(const Duration(milliseconds: 50), () {
-      if (settingsStore.startPage) {
-        if (kDebugMode) {
-          print("TAF Page is the start page");
-        }
-        setState(() {
-          currentPageIndex = 1;
-          pageController.jumpToPage(currentPageIndex);
-        });
+    while (!settingsStore.initialized) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    if (settingsStore.startPage) {
+      if (kDebugMode) {
+        print("TAF Page is the start page");
       }
-    });
+      setState(() {
+        currentPageIndex = 1;
+        pageController.jumpToPage(currentPageIndex);
+      });
+    }
   }
 
   @override
   void dispose() {
-    pageController.dispose();
+    // pageController.dispose();
     super.dispose();
   }
 

@@ -25,6 +25,22 @@ mixin _$SettingsStore on _SettingsStore, Store {
     });
   }
 
+  late final _$initializedAtom =
+      Atom(name: '_SettingsStore.initialized', context: context);
+
+  @override
+  bool get initialized {
+    _$initializedAtom.reportRead();
+    return super.initialized;
+  }
+
+  @override
+  set initialized(bool value) {
+    _$initializedAtom.reportWrite(value, super.initialized, () {
+      super.initialized = value;
+    });
+  }
+
   late final _$darkModeAtom =
       Atom(name: '_SettingsStore.darkMode', context: context);
 
@@ -178,6 +194,7 @@ mixin _$SettingsStore on _SettingsStore, Store {
   String toString() {
     return '''
 startPage: ${startPage},
+initialized: ${initialized},
 darkMode: ${darkMode},
 fetchMetarOnStartup: ${fetchMetarOnStartup},
 fetchTafOnStartup: ${fetchTafOnStartup},

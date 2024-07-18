@@ -49,6 +49,7 @@ dependencies:
   sqflite_common_ffi: ^2.3.3
   dio: ^5.5.0+1
   package_info_plus: ^8.0.0
+  flutter_animate: ^4.5.0
 
 dev_dependencies:
   flutter_test:

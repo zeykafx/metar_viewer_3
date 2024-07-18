@@ -15,13 +15,6 @@ mixin _$MetarStore on _MetarStore, Store {
   bool get hasMetar => (_$hasMetarComputed ??=
           Computed<bool>(() => super.hasMetar, name: '_MetarStore.hasMetar'))
       .value;
-  Computed<DateTime?>? _$lastUpdatedComputed;
-
-  @override
-  DateTime? get lastUpdated =>
-      (_$lastUpdatedComputed ??= Computed<DateTime?>(() => super.lastUpdated,
-              name: '_MetarStore.lastUpdated'))
-          .value;
 
   late final _$metarAtom = Atom(name: '_MetarStore.metar', context: context);
 
@@ -179,8 +172,7 @@ hasAlert: ${hasAlert},
 alertMessage: ${alertMessage},
 isLoading: ${isLoading},
 searchHistory: ${searchHistory},
-hasMetar: ${hasMetar},
-lastUpdated: ${lastUpdated}
+hasMetar: ${hasMetar}
     ''';
   }
 }

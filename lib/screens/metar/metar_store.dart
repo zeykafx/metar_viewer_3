@@ -20,8 +20,8 @@ abstract class _MetarStore with Store {
   @computed
   bool get hasMetar => metar != null;
 
-  @computed
-  DateTime? get lastUpdated => metar?.time;
+  // @computed
+  // DateTime? get lastUpdated => metar?.time;
 
   @observable
   bool hasAlert = false;
@@ -38,12 +38,12 @@ abstract class _MetarStore with Store {
     try {
       isLoading = true;
 
-      var (Metar metarValue, bool cached) = await avwxApi.getMetar(airport);
+      var (Metar metarValue, bool cached, DateTime lastUpdated) = await avwxApi.getMetar(airport);
       metar = metarValue;
       isLoading = false;
 
       if (cached) {
-        int timeDiff = 3 - DateTime.now().difference(lastUpdated!).inMinutes;
+        int timeDiff = 3 - DateTime.now().difference(lastUpdated).inMinutes;
         alertMessage = "The metar displayed is cached, it will refresh in $timeDiff minute${timeDiff > 1 ? "s" : ""}";
         hasAlert = true;
       } else {

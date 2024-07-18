@@ -20,8 +20,8 @@ abstract class _TafStore with Store {
   @computed
   bool get hasTaf => taf != null;
 
-  @computed
-  DateTime? get lastUpdated => taf?.time;
+  // @computed
+  // DateTime? get lastUpdated => taf?.time;
 
   @observable
   bool hasAlert = false;
@@ -37,13 +37,13 @@ abstract class _TafStore with Store {
   Future<void> fetchTaf(Airport airport) async {
     try {
       isLoading = true;
-
-      var (Taf tafValue, bool cached) = await avwxApi.getTaf(airport);
+      var (Taf tafValue, bool cached, DateTime lastUpdated) = await avwxApi.getTaf(airport);
       taf = tafValue;
       isLoading = false;
 
       if (cached) {
-        int timeDiff = 3 - DateTime.now().difference(lastUpdated!).inMinutes;
+        print(lastUpdated);
+        int timeDiff = 3 - DateTime.now().difference(lastUpdated).inMinutes;
         alertMessage = "The taf displayed is cached, it will refresh in $timeDiff minute${timeDiff > 1 ? "s" : ""}";
         hasAlert = true;
       } else {

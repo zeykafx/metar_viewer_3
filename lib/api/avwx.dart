@@ -19,7 +19,7 @@ class AvwxApi {
   Taf? taf;
 
   /// fetch the metar, and return the metar object and a boolean indicating if the response was cached.
-  Future<(Metar, bool)> getMetar(Airport airport) async {
+  Future<(Metar, bool, DateTime)> getMetar(Airport airport) async {
     if (kDebugMode) {
       print("Fetching metar for ${airport.icao}");
     }
@@ -33,7 +33,7 @@ class AvwxApi {
         if (kDebugMode) {
           print("Metar is still valid");
         }
-        return (cachedMetar, true);
+        return (cachedMetar, true, timeFetched);
       }
     }
 
@@ -57,7 +57,7 @@ class AvwxApi {
     if (response.statusCode == 200) {
       metar = Metar.fromJson(response.data, airport);
       metarCachedAirports[icao] = (airport, currentTime, metar!);
-      return (metar!, false);
+      return (metar!, false, currentTime);
     } else {
       if (kDebugMode) {
         print(response.statusCode);
@@ -66,7 +66,7 @@ class AvwxApi {
     }
   }
 
-  Future<(Taf, bool)> getTaf(Airport airport) async {
+  Future<(Taf, bool, DateTime)> getTaf(Airport airport) async {
     if (kDebugMode) {
       print("Fetching taf for ${airport.icao}");
     }
@@ -77,7 +77,7 @@ class AvwxApi {
     if (tafCachedAirport[icao] case (Airport airport, DateTime lastUpdated, Taf cachedTaf)) {
       if (currentTime.difference(lastUpdated) < Duration(minutes: CACHE_DURATION_MIN)) {
         // taf report was cached
-        return (taf!, true);
+        return (taf!, true, lastUpdated);
       }
     }
 
@@ -102,7 +102,7 @@ class AvwxApi {
     if (response.statusCode == 200) {
       taf = Taf.fromJson(response.data);
       tafCachedAirport[icao] = (airport, currentTime, taf!);
-      return (taf!, false);
+      return (taf!, false, currentTime);
     } else {
       if (kDebugMode) {
         print(response.statusCode);

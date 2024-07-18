@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:metar_viewer_3/models/airport.dart';
 import 'package:metar_viewer_3/screens/settings/settings_store.dart';
@@ -48,20 +49,24 @@ class _TafPageState extends State<TafPage> {
   }
 
   Future<void> init() async {
-    Future.delayed(const Duration(milliseconds: 100), () async {
-      if (settingsStore.fetchTafOnStartup) {
-        Airport apt = await tafStore.getAirportFromIcao(settingsStore.defaultTafAirport!);
-        if (kDebugMode) {
-          print("Fetching default airport taf");
-        }
-        tafStore.fetchTaf(apt);
+    while (!settingsStore.initialized) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    if (settingsStore.fetchTafOnStartup) {
+      Airport apt = await tafStore.getAirportFromIcao(settingsStore.defaultTafAirport!);
+      if (kDebugMode) {
+        print("Fetching default airport taf");
       }
-    });
+      tafStore.fetchTaf(apt);
+    }
   }
 
   Widget buildCard(Widget content) {
     return Expanded(
       child: Card(
+        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+        elevation: 0,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 28.0,
@@ -183,6 +188,8 @@ class _TafPageState extends State<TafPage> {
                           SizedBox(
                             width: double.infinity,
                             child: Card(
+                              color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                              elevation: 0,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 28.0,
@@ -230,13 +237,17 @@ class _TafPageState extends State<TafPage> {
                           ),
 
                           if (tafStore.taf == null) ...[
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 30),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 30),
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 500,
                                 child: Card(
-                                  child: Center(child: Text("Forecasts")),
+                                  color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                                  elevation: 0,
+                                  child: const Center(
+                                    child: Text("Forecasts"),
+                                  ),
                                 ),
                               ),
                             ),
@@ -244,63 +255,74 @@ class _TafPageState extends State<TafPage> {
 
                           // taf forecasts
                           if (tafStore.taf != null) ...[
-                            for (var forecast in tafStore.taf!.forecast)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 30),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 28.0,
-                                        vertical: 22.0,
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            "Type",
-                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                  color: Theme.of(context).dividerColor,
-                                                ),
-                                          ),
-                                          Tooltip(
-                                            message: typeToDescription[forecast.type] ?? "Description",
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
+                            ...tafStore.taf!.forecast
+                                .asMap()
+                                .map(
+                                  (i, forecast) => MapEntry(
+                                    i,
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 30),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        child: Card(
+                                          color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                                          elevation: 0,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 28.0,
+                                              vertical: 22.0,
+                                            ),
+                                            child: Column(
                                               children: [
-                                                Text(forecast.type),
-                                                const SizedBox(width: 3.0),
-                                                Icon(
-                                                  Icons.info,
-                                                  size: 13.0,
-                                                  color: Theme.of(context).dividerColor,
+                                                Text(
+                                                  "Type",
+                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                        color: Theme.of(context).dividerColor,
+                                                      ),
                                                 ),
+                                                Tooltip(
+                                                  enableFeedback: true,
+                                                  triggerMode: TooltipTriggerMode.tap,
+                                                  message: typeToDescription[forecast.type] ?? "Description",
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Text(forecast.type),
+                                                      const SizedBox(width: 3.0),
+                                                      Icon(
+                                                        Icons.info,
+                                                        size: 13.0,
+                                                        color: Theme.of(context).dividerColor,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8.0),
+                                                Text(
+                                                  "Summary",
+                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                        color: Theme.of(context).dividerColor,
+                                                      ),
+                                                ),
+                                                Text(forecast.summary),
+                                                const SizedBox(height: 8.0),
+                                                Text(
+                                                  "Time",
+                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                        color: Theme.of(context).dividerColor,
+                                                      ),
+                                                ),
+                                                Text(formatDatetime(forecast.startTime, forecast.endTime, false)),
                                               ],
                                             ),
                                           ),
-                                          const SizedBox(height: 8.0),
-                                          Text(
-                                            "Summary",
-                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                  color: Theme.of(context).dividerColor,
-                                                ),
-                                          ),
-                                          Text(forecast.summary),
-                                          const SizedBox(height: 8.0),
-                                          Text(
-                                            "Time",
-                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                  color: Theme.of(context).dividerColor,
-                                                ),
-                                          ),
-                                          Text(formatDatetime(forecast.startTime, forecast.endTime, false)),
-                                        ],
+                                        ),
                                       ),
-                                    ),
+                                    ).animate(delay: Duration(milliseconds: 100 + i * 150)).fadeIn(),
                                   ),
-                                ),
-                              ),
+                                )
+                                .values,
                           ],
                         ],
                       );

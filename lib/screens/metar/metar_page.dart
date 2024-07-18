@@ -43,15 +43,16 @@ class _MetarPageState extends State<MetarPage> {
   }
 
   Future<void> init() async {
-    Future.delayed(const Duration(milliseconds: 100), () async {
-      if (settingsStore.fetchMetarOnStartup) {
-        Airport apt = await metarStore.getAirportFromIcao(settingsStore.defaultMetarAirport!);
-        if (kDebugMode) {
-          print("Fetching default airport metar");
-        }
-        metarStore.fetchMetar(apt);
+    while (!settingsStore.initialized) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    if (settingsStore.fetchMetarOnStartup) {
+      Airport apt = await metarStore.getAirportFromIcao(settingsStore.defaultMetarAirport!);
+      if (kDebugMode) {
+        print("Fetching default airport metar");
       }
-    });
+      metarStore.fetchMetar(apt);
+    }
   }
 
   // final SearchController controller = SearchController();
@@ -59,6 +60,8 @@ class _MetarPageState extends State<MetarPage> {
   Widget buildCard(Widget content) {
     return Expanded(
       child: Card(
+        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+        elevation: 0,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 28.0,
@@ -78,7 +81,7 @@ class _MetarPageState extends State<MetarPage> {
       child: Card(
         margin: EdgeInsets.zero,
         elevation: 0,
-        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.1),
+        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.2),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
           child: Center(
@@ -190,6 +193,8 @@ class _MetarPageState extends State<MetarPage> {
                         SizedBox(
                           width: double.infinity,
                           child: Card(
+                            color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                            elevation: 0,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 28.0,
@@ -377,6 +382,8 @@ class _MetarPageState extends State<MetarPage> {
                                     width: double.infinity,
                                     // height: 115,
                                     child: Card(
+                                      color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                                      elevation: 0,
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 28.0,
@@ -413,6 +420,8 @@ class _MetarPageState extends State<MetarPage> {
                                     width: double.infinity,
                                     // height: 115,
                                     child: Card(
+                                      color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                                      elevation: 0,
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 28.0,
@@ -465,11 +474,15 @@ class _MetarPageState extends State<MetarPage> {
                         ),
                         const SizedBox(height: 8.0),
                         if (metarStore.metar == null) ...[
-                          const SizedBox(
+                          SizedBox(
                             width: double.infinity,
                             height: 300,
                             child: Card(
-                              child: Center(child: Text("Airport Info")),
+                              color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                              elevation: 0,
+                              child: const Center(
+                                child: Text("Airport Info"),
+                              ),
                             ),
                           ),
                         ],

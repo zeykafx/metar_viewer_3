@@ -32,6 +32,8 @@ class _AirportInfoState extends State<AirportInfo> {
                 child: SizedBox(
                   width: double.infinity,
                   child: Card(
+                    color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                    elevation: 0,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 28.0,
@@ -90,6 +92,13 @@ class _AirportInfoState extends State<AirportInfo> {
                                     text: "${runway.width}ft",
                                     style: Theme.of(context).textTheme.bodySmall,
                                   ),
+                                  // surface
+                                  TextSpan(
+                                    text: " - ${runway.surface}",
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          color: Theme.of(context).dividerColor,
+                                        ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -112,6 +121,8 @@ class _AirportInfoState extends State<AirportInfo> {
         SizedBox(
           width: double.infinity,
           child: Card(
+            color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+            elevation: 0,
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 28.0,
@@ -129,47 +140,34 @@ class _AirportInfoState extends State<AirportInfo> {
                   if (widget.airport.gndFreq.isNotEmpty)
                     Text(
                       'Ground: ${widget.airport.gndFreq} MHz',
-                      style: Theme.of(context).textTheme.bodySmall,
+                      // style: Theme.of(context).textTheme.bodySmall,
                     ),
                   // tower
                   if (widget.airport.towerFreq.isNotEmpty)
                     Text(
                       'Tower: ${widget.airport.towerFreq} MHz',
-                      style: Theme.of(context).textTheme.bodySmall,
+                      // style: Theme.of(context).textTheme.bodySmall,
                     ),
                   // ctaf
                   if (widget.airport.ctafFreq.isNotEmpty)
                     Text(
                       'CTAF: ${widget.airport.ctafFreq} MHz',
-                      style: Theme.of(context).textTheme.bodySmall,
+                      // style: Theme.of(context).textTheme.bodySmall,
                     ),
                   // asos
                   if (widget.airport.asosFreq.isNotEmpty)
                     Text(
                       'ASOS: ${widget.airport.asosFreq} MHz',
-                      style: Theme.of(context).textTheme.bodySmall,
+                      // style: Theme.of(context).textTheme.bodySmall,
                     ),
 
                   for (Frequency frequency in widget.airport.frequencies)
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: frequency.name,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          TextSpan(
-                            text: ": ",
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).dividerColor,
-                                ),
-                          ),
-                          TextSpan(
-                            text: "${frequency.frequency} MHz",
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("${frequency.name}: "),
+                        Text("${frequency.frequency} MHz"),
+                      ],
                     ),
                 ],
               ),
@@ -244,6 +242,8 @@ class BestRunwayForWinds extends StatelessWidget {
     bestRunwayUrl = getBestRunwayUrl(bestRunwayAngle);
 
     return Card(
+      color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+      elevation: 0,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 20.0,
@@ -269,6 +269,10 @@ class BestRunwayForWinds extends StatelessWidget {
                   SvgPicture.asset(
                     "assets/compass.svg",
                     width: 250,
+                    colorFilter: ColorFilter.mode(
+                      MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.black : Colors.white,
+                      BlendMode.srcIn,
+                    ),
                     alignment: Alignment.center,
                   ),
                   Transform.rotate(
