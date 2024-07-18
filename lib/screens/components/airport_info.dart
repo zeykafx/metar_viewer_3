@@ -179,12 +179,17 @@ class _AirportInfoState extends State<AirportInfo> {
   }
 }
 
-class BestRunwayForWinds extends StatelessWidget {
+class BestRunwayForWinds extends StatefulWidget {
   final Airport airport;
   final Metar metar;
 
   const BestRunwayForWinds({super.key, required this.airport, required this.metar});
 
+  @override
+  State<BestRunwayForWinds> createState() => _BestRunwayForWindsState();
+}
+
+class _BestRunwayForWindsState extends State<BestRunwayForWinds> {
   String getBestRunwayUrl(int angle) {
     // https://metar-taf.com/images/rwy/day-18.svg
     // the angle for the site goes from 0 to 18, so if we need more than 18 we use the opposite runway
@@ -198,14 +203,14 @@ class BestRunwayForWinds extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Runway bestRunwayForWinds = airport.runways[0];
+    Runway bestRunwayForWinds = widget.airport.runways[0];
     String bestRunwayName = "";
     int bestRunwayAngle = 0;
     String bestRunwayUrl = "";
 
-    int oppositeWindDirection = (180 - metar.windDirection).abs();
+    int oppositeWindDirection = (180 - widget.metar.windDirection).abs();
 
-    for (Runway runway in airport.runways) {
+    for (Runway runway in widget.airport.runways) {
       var (int angleRunway0, int angleRunway1) = runway.angle;
       var (int angleCurrentBestRunway0, int angleCurrentBestRunway1) = bestRunwayForWinds.angle;
 
@@ -270,7 +275,7 @@ class BestRunwayForWinds extends StatelessWidget {
                     "assets/compass.svg",
                     width: 250,
                     colorFilter: ColorFilter.mode(
-                      MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.black : Colors.white,
+                      Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
                       BlendMode.srcIn,
                     ),
                     alignment: Alignment.center,
@@ -286,7 +291,7 @@ class BestRunwayForWinds extends StatelessWidget {
 
                   // wind direction
                   Transform.rotate(
-                    angle: vector.radians(metar.windDirection.toDouble() + 90),
+                    angle: vector.radians(widget.metar.windDirection.toDouble() + 90),
                     child: Icon(
                       Icons.arrow_right_alt_rounded,
                       size: 100,

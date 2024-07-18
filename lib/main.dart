@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart' as Cup;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -201,33 +202,67 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Metar Viewer'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
+      // appBar: AppBar(
+      //   title: const Text('Metar Viewer'),
+      //   actions: [
+      //     IconButton(
+      //       onPressed: () {
+      //         Navigator.of(context).push(
+      //           MaterialPageRoute(
+      //             builder: (context) => const SettingsPage(),
+      //           ),
+      //         );
+      //       },
+      //       icon: const Icon(Icons.settings),
+      //     ),
+      //   ],
+      // ),
+      // body: PageView(
+      //   controller: pageController,
+      //   allowImplicitScrolling: true,
+      //   onPageChanged: (int index) {
+      //     setState(() {
+      //       currentPageIndex = index;
+      //     });
+      //   },
+      //   children: const <Widget>[
+      //     MetarPage(),
+      //     TafPage(),
+      //   ],
+      // ),
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              title: const Text('Metar Viewer'),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SettingsPage(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.settings),
                 ),
-              );
-            },
-            icon: const Icon(Icons.settings),
-          ),
-        ],
-      ),
-      body: PageView(
-        controller: pageController,
-        allowImplicitScrolling: true,
-        onPageChanged: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
+              ],
+            ),
+          ];
         },
-        children: const <Widget>[
-          MetarPage(),
-          TafPage(),
-        ],
+        body: PageView(
+          controller: pageController,
+          allowImplicitScrolling: true,
+          onPageChanged: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          children: const <Widget>[
+            MetarPage(),
+            TafPage(),
+          ],
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: _onItemTapped,

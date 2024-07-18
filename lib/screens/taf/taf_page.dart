@@ -9,7 +9,7 @@ import 'package:mobx/mobx.dart';
 import 'package:time_formatter/time_formatter.dart';
 
 class TafPage extends StatefulWidget {
-  const TafPage({Key? key}) : super(key: key);
+  const TafPage({super.key});
 
   @override
   State<TafPage> createState() => _TafPageState();
@@ -18,7 +18,8 @@ class TafPage extends StatefulWidget {
 class _TafPageState extends State<TafPage> {
   TafStore tafStore = TafStore();
   SettingsStore settingsStore = SettingsStore();
-  int MIN_WIDTH = 500;
+  int MIN_WIDTH = 300;
+  int SMALL_WIDTH = 400;
 
   Map<String, String> typeToDescription = {
     "FROM": "Changes expected from a date/hour to another date/hour",
@@ -62,22 +63,6 @@ class _TafPageState extends State<TafPage> {
     }
   }
 
-  Widget buildCard(Widget content) {
-    return Expanded(
-      child: Card(
-        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 28.0,
-            vertical: 18.0,
-          ),
-          child: content,
-        ),
-      ),
-    );
-  }
-
   String formatDatetime(DateTime? time1, DateTime? time2, bool showDate) {
     if (time1 == null || time2 == null) {
       return "Time";
@@ -97,19 +82,23 @@ class _TafPageState extends State<TafPage> {
     MediaQueryData mediaQuery = MediaQuery.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: mediaQuery.size.width > SMALL_WIDTH ? 12 : 8,
+        vertical: 12.0,
+      ),
       child: Card(
         margin: EdgeInsets.zero,
         elevation: 0,
-        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.1),
+        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.2),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
+          padding: EdgeInsets.symmetric(horizontal: mediaQuery.size.width > SMALL_WIDTH ? 20 : 10, vertical: 0),
           child: Center(
             child: Container(
               constraints: const BoxConstraints(maxWidth: 700),
               child: Align(
                 alignment: Alignment.topCenter,
                 child: SingleChildScrollView(
+                  controller: ScrollController(),
                   child: Observer(
                     builder: (context) {
                       return Column(
@@ -160,6 +149,7 @@ class _TafPageState extends State<TafPage> {
                                   Expanded(
                                     flex: 4,
                                     child: SearchAnchor.bar(
+                                      searchController: SearchController(),
                                       isFullScreen: MediaQuery.of(context).size.width < 700,
                                       suggestionsBuilder: (
                                         BuildContext context,
@@ -238,7 +228,10 @@ class _TafPageState extends State<TafPage> {
 
                           if (tafStore.taf == null) ...[
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 30),
+                              padding: EdgeInsets.symmetric(
+                                vertical: 4.0,
+                                horizontal: mediaQuery.size.width > SMALL_WIDTH ? 30 : 15,
+                              ),
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 500,
@@ -261,7 +254,10 @@ class _TafPageState extends State<TafPage> {
                                   (i, forecast) => MapEntry(
                                     i,
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 30),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 4.0,
+                                        horizontal: mediaQuery.size.width > SMALL_WIDTH ? 30 : 15,
+                                      ),
                                       child: SizedBox(
                                         width: double.infinity,
                                         child: Card(

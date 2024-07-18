@@ -20,7 +20,8 @@ class _MetarPageState extends State<MetarPage> {
   MetarStore metarStore = MetarStore();
   SettingsStore settingsStore = SettingsStore();
 
-  int MIN_WIDTH = 400;
+  int MIN_WIDTH = 300;
+  int SMALL_WIDTH = 500;
 
   @override
   void initState() {
@@ -57,14 +58,14 @@ class _MetarPageState extends State<MetarPage> {
 
   // final SearchController controller = SearchController();
 
-  Widget buildCard(Widget content) {
+  Widget buildCard(Widget content, MediaQueryData mediaQuery) {
     return Expanded(
       child: Card(
         color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
         elevation: 0,
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 28.0,
+          padding: EdgeInsets.symmetric(
+            horizontal: mediaQuery.size.width > SMALL_WIDTH ? 28 : 10,
             vertical: 18.0,
           ),
           child: content,
@@ -83,13 +84,14 @@ class _MetarPageState extends State<MetarPage> {
         elevation: 0,
         color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.2),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
+          padding: EdgeInsets.symmetric(horizontal: mediaQuery.size.width > SMALL_WIDTH ? 20 : 10, vertical: 0),
           child: Center(
             child: Container(
               constraints: const BoxConstraints(maxWidth: 700),
               child: Align(
                 alignment: Alignment.topCenter,
                 child: SingleChildScrollView(
+                  controller: ScrollController(),
                   child: Observer(builder: (context) {
                     return Column(
                       mainAxisSize: MainAxisSize.max,
@@ -100,7 +102,7 @@ class _MetarPageState extends State<MetarPage> {
                         ],
                         IntrinsicHeight(
                           child: Padding(
-                            padding: const EdgeInsets.all(14.0),
+                            padding: EdgeInsets.all(mediaQuery.size.width > SMALL_WIDTH ? 14 : 10),
                             child: Flex(
                               direction: mediaQuery.size.width > MIN_WIDTH ? Axis.horizontal : Axis.vertical,
                               mainAxisSize: MainAxisSize.max,
@@ -165,6 +167,7 @@ class _MetarPageState extends State<MetarPage> {
                                 Expanded(
                                   flex: 4,
                                   child: SearchAnchor.bar(
+                                    searchController: SearchController(),
                                     isFullScreen: MediaQuery.of(context).size.width < 700,
                                     suggestionsBuilder: (
                                       BuildContext context,
@@ -269,6 +272,7 @@ class _MetarPageState extends State<MetarPage> {
                                     ),
                                   ],
                                 ),
+                                mediaQuery,
                               ),
                               // Winds/vis
                               buildCard(
@@ -319,6 +323,7 @@ class _MetarPageState extends State<MetarPage> {
                                     ),
                                   ],
                                 ),
+                                mediaQuery,
                               ),
                               // Altimeter/condition
                               buildCard(
@@ -363,6 +368,7 @@ class _MetarPageState extends State<MetarPage> {
                                     ),
                                   ],
                                 ),
+                                mediaQuery,
                               )
                             ],
                           ),
@@ -385,8 +391,8 @@ class _MetarPageState extends State<MetarPage> {
                                       color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
                                       elevation: 0,
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 28.0,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: mediaQuery.size.width > SMALL_WIDTH ? 28 : 15,
                                           vertical: 22.0,
                                         ),
                                         child: Column(
@@ -423,8 +429,8 @@ class _MetarPageState extends State<MetarPage> {
                                       color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
                                       elevation: 0,
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 28.0,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: mediaQuery.size.width > SMALL_WIDTH ? 28 : 15,
                                           vertical: 22.0,
                                         ),
                                         child: Column(

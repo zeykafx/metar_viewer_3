@@ -23,7 +23,6 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: ListView(
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
         children: const [
           GeneralSettings(),
           WeatherSection(),

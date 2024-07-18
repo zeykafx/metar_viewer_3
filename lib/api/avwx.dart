@@ -9,7 +9,7 @@ import 'package:metar_viewer_3/models/metar.dart';
 import '../models/taf.dart';
 
 class AvwxApi {
-  int CACHE_DURATION_MIN = 3;
+  int CACHE_DURATION_MIN = 5;
   String? token = dotenv.env["TOKEN"];
   String baseUrl = "https://avwx.rest/api/";
   Map<String, (Airport, DateTime, Metar)> metarCachedAirports = {};
@@ -77,7 +77,7 @@ class AvwxApi {
     if (tafCachedAirport[icao] case (Airport airport, DateTime lastUpdated, Taf cachedTaf)) {
       if (currentTime.difference(lastUpdated) < Duration(minutes: CACHE_DURATION_MIN)) {
         // taf report was cached
-        return (taf!, true, lastUpdated);
+        return (cachedTaf, true, lastUpdated);
       }
     }
 

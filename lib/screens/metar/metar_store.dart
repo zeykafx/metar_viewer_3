@@ -43,8 +43,8 @@ abstract class _MetarStore with Store {
       isLoading = false;
 
       if (cached) {
-        int timeDiff = 3 - DateTime.now().difference(lastUpdated).inMinutes;
-        alertMessage = "The metar displayed is cached, it will refresh in $timeDiff minute${timeDiff > 1 ? "s" : ""}";
+        int timeDiff = 5 - DateTime.now().difference(lastUpdated).inMinutes;
+        alertMessage = "The Metar displayed is cached, it will refresh in $timeDiff minute${timeDiff > 1 ? "s" : ""}";
         hasAlert = true;
       } else {
         alertMessage = "";
