@@ -107,7 +107,7 @@ mixin _$MetarStore on _MetarStore, Store {
       AsyncAction('_MetarStore.getAirportFromIcao', context: context);
 
   @override
-  Future<Airport> getAirportFromIcao(String icao) {
+  Future<Airport?> getAirportFromIcao(String icao) {
     return _$getAirportFromIcaoAsyncAction
         .run(() => super.getAirportFromIcao(icao));
   }

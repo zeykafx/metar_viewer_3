@@ -55,11 +55,13 @@ class _TafPageState extends State<TafPage> {
     }
 
     if (settingsStore.fetchTafOnStartup) {
-      Airport apt = await tafStore.getAirportFromIcao(settingsStore.defaultTafAirport!);
+      Airport? apt = await tafStore.getAirportFromIcao(settingsStore.defaultTafAirport!);
       if (kDebugMode) {
         print("Fetching default airport taf");
       }
-      tafStore.fetchTaf(apt);
+      if (apt != null) {
+        tafStore.fetchTaf(apt);
+      }
     }
   }
 
@@ -98,7 +100,7 @@ class _TafPageState extends State<TafPage> {
               child: Align(
                 alignment: Alignment.topCenter,
                 child: SingleChildScrollView(
-                  controller: ScrollController(),
+                  // controller: ScrollController(),
                   child: Observer(
                     builder: (context) {
                       return Column(

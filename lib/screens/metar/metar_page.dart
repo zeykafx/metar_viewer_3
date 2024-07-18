@@ -48,11 +48,13 @@ class _MetarPageState extends State<MetarPage> {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     if (settingsStore.fetchMetarOnStartup) {
-      Airport apt = await metarStore.getAirportFromIcao(settingsStore.defaultMetarAirport!);
+      Airport? apt = await metarStore.getAirportFromIcao(settingsStore.defaultMetarAirport!);
       if (kDebugMode) {
         print("Fetching default airport metar");
       }
-      metarStore.fetchMetar(apt);
+      if (apt != null) {
+        metarStore.fetchMetar(apt);
+      }
     }
   }
 
@@ -78,11 +80,6 @@ class _MetarPageState extends State<MetarPage> {
   Widget build(BuildContext context) {
     MediaQueryData mediaQuery = MediaQuery.of(context);
 
-    String remarksTranslationString = "";
-    for (var MapEntry(key: key, value: value) in metarStore.metar!.remarksTranslations.entries) {
-      remarksTranslationString += "$key: $value, ";
-    }
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
       child: Card(
@@ -97,7 +94,7 @@ class _MetarPageState extends State<MetarPage> {
               child: Align(
                 alignment: Alignment.topCenter,
                 child: SingleChildScrollView(
-                  controller: ScrollController(),
+                  // controller: ScrollController(),
                   child: Observer(builder: (context) {
                     return Column(
                       mainAxisSize: MainAxisSize.max,
@@ -323,7 +320,7 @@ class _MetarPageState extends State<MetarPage> {
                                     Flexible(
                                       child: Text(
                                         metarStore.metar != null
-                                            ? "${metarStore.metar!.visibility} ${metarStore.metar!.visiblityUnits}"
+                                            ? "${metarStore.metar!.visibility} ${metarStore.metar!.visibility != "CAVOK" ? metarStore.metar!.visiblityUnits : ""}"
                                             : "Visibility",
                                       ),
                                     ),
@@ -449,7 +446,9 @@ class _MetarPageState extends State<MetarPage> {
                                                   ),
                                             ),
                                             Text(
-                                              metarStore.metar != null ? remarksTranslationString : "Remarks",
+                                              metarStore.metar != null
+                                                  ? metarStore.metar!.remarksTranslations
+                                                  : "Remarks",
                                             ),
                                           ],
                                         ),

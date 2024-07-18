@@ -23,7 +23,7 @@ class Metar {
   String flightRules;
   List<CloudLayer> cloudLayers;
   String remarks;
-  Map<String, String> remarksTranslations;
+  String remarksTranslations;
 
   Metar({
     required this.raw,
@@ -82,15 +82,13 @@ class Metar {
       }
     }
 
-    Map<String, String> remarksTranslations = {};
-    print(json["translate"]);
+    String remarksTranslations = "";
     if (json["translate"] != null) {
       for (var key in json["translate"]["remarks"].keys) {
-        remarksTranslations[key] = json["translate"]["remarks"][key];
+        String value = json["translate"]["remarks"][key];
+        remarksTranslations += "$key: $value, ";
       }
     }
-    print(remarksTranslations);
-    // print(json["remarks_info"]["codes"]);
 
     return Metar(
       raw: raw,

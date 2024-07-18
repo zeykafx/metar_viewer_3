@@ -62,7 +62,7 @@ abstract class _TafStore with Store {
   }
 
   @action
-  Future<Airport> getAirportFromIcao(String icao) async {
+  Future<Airport?> getAirportFromIcao(String icao) async {
     // wait until database is not null
     while (database == null) {
       await Future.delayed(const Duration(milliseconds: 100));
@@ -73,6 +73,12 @@ abstract class _TafStore with Store {
       where: "NavId LIKE ?",
       whereArgs: ["%$icao%"],
     );
+
+    if (res.isEmpty) {
+      hasAlert = true;
+      alertMessage = "No airport found with ICAO $icao, please enter a valid ICAO code.";
+      return null;
+    }
 
     Airport airport = Airport.fromDb(res[0]);
     return airport;

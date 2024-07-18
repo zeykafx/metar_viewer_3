@@ -107,7 +107,7 @@ mixin _$TafStore on _TafStore, Store {
       AsyncAction('_TafStore.getAirportFromIcao', context: context);
 
   @override
-  Future<Airport> getAirportFromIcao(String icao) {
+  Future<Airport?> getAirportFromIcao(String icao) {
     return _$getAirportFromIcaoAsyncAction
         .run(() => super.getAirportFromIcao(icao));
   }
