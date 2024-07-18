@@ -1,4 +1,4 @@
-package com.zeykafx.metar_viewer_3
+package com.zeykafx.metarviewer
 
 import io.flutter.embedding.android.FlutterActivity
 
