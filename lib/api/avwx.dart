@@ -37,7 +37,7 @@ class AvwxApi {
       }
     }
 
-    String reqUrl = '${baseUrl}metar/${icao.toUpperCase()}?options=summary';
+    String reqUrl = '${baseUrl}metar/${icao.toUpperCase()}?options=summary,translate';
     Dio dio = Dio();
     Response response;
     try {

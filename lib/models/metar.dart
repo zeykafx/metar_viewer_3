@@ -23,6 +23,7 @@ class Metar {
   String flightRules;
   List<CloudLayer> cloudLayers;
   String remarks;
+  Map<String, String> remarksTranslations;
 
   Metar({
     required this.raw,
@@ -44,6 +45,7 @@ class Metar {
     required this.flightRules,
     required this.cloudLayers,
     required this.remarks,
+    required this.remarksTranslations,
   });
 
   static Metar fromJson(Map<String, dynamic> json, Airport airport) {
@@ -80,6 +82,14 @@ class Metar {
       }
     }
 
+    Map<String, String> remarksTranslations = {};
+    print(json["translate"]);
+    if (json["translate"] != null) {
+      for (var key in json["translate"]["remarks"].keys) {
+        remarksTranslations[key] = json["translate"]["remarks"][key];
+      }
+    }
+    print(remarksTranslations);
     // print(json["remarks_info"]["codes"]);
 
     return Metar(
@@ -102,6 +112,7 @@ class Metar {
       flightRules: flightRules,
       cloudLayers: cloudLayers,
       remarks: remarks,
+      remarksTranslations: remarksTranslations,
     );
   }
 }

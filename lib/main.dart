@@ -202,68 +202,68 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Metar Viewer'),
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () {
-      //         Navigator.of(context).push(
-      //           MaterialPageRoute(
-      //             builder: (context) => const SettingsPage(),
-      //           ),
-      //         );
-      //       },
-      //       icon: const Icon(Icons.settings),
-      //     ),
-      //   ],
-      // ),
-      // body: PageView(
-      //   controller: pageController,
-      //   allowImplicitScrolling: true,
-      //   onPageChanged: (int index) {
-      //     setState(() {
-      //       currentPageIndex = index;
-      //     });
-      //   },
-      //   children: const <Widget>[
-      //     MetarPage(),
-      //     TafPage(),
-      //   ],
-      // ),
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              title: const Text('Metar Viewer'),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const SettingsPage(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.settings),
+      appBar: AppBar(
+        title: const Text('Metar Viewer'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SettingsPage(),
                 ),
-              ],
-            ),
-          ];
-        },
-        body: PageView(
-          controller: pageController,
-          allowImplicitScrolling: true,
-          onPageChanged: (int index) {
-            setState(() {
-              currentPageIndex = index;
-            });
-          },
-          children: const <Widget>[
-            MetarPage(),
-            TafPage(),
-          ],
-        ),
+              );
+            },
+            icon: const Icon(Icons.settings),
+          ),
+        ],
       ),
+      body: PageView(
+        controller: pageController,
+        allowImplicitScrolling: true,
+        onPageChanged: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        children: const <Widget>[
+          MetarPage(),
+          TafPage(),
+        ],
+      ),
+      // body: NestedScrollView(
+      //   headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+      //     return <Widget>[
+      //       SliverAppBar(
+      //         title: const Text('Metar Viewer'),
+      //         actions: [
+      //           IconButton(
+      //             onPressed: () {
+      //               Navigator.of(context).push(
+      //                 MaterialPageRoute(
+      //                   builder: (context) => const SettingsPage(),
+      //                 ),
+      //               );
+      //             },
+      //             icon: const Icon(Icons.settings),
+      //           ),
+      //         ],
+      //       ),
+      //     ];
+      //   },
+      //   body: PageView(
+      //     controller: pageController,
+      //     allowImplicitScrolling: true,
+      //     onPageChanged: (int index) {
+      //       setState(() {
+      //         currentPageIndex = index;
+      //       });
+      //     },
+      //     children: const <Widget>[
+      //       MetarPage(),
+      //       TafPage(),
+      //     ],
+      //   ),
+      // ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: _onItemTapped,
         selectedIndex: currentPageIndex,

@@ -310,7 +310,7 @@ class _AboutSectionState extends State<AboutSection> {
                 title: const Text(
                   "Source Code",
                 ),
-                subtitle: const Row(
+                subtitle: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("You can find the source code at "),

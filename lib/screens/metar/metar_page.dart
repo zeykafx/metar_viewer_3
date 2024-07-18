@@ -77,6 +77,12 @@ class _MetarPageState extends State<MetarPage> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQuery = MediaQuery.of(context);
+
+    String remarksTranslationString = "";
+    for (var MapEntry(key: key, value: value) in metarStore.metar!.remarksTranslations.entries) {
+      remarksTranslationString += "$key: $value, ";
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
       child: Card(
@@ -419,7 +425,7 @@ class _MetarPageState extends State<MetarPage> {
 
                               // remarks
                               Visibility(
-                                visible: metarStore.metar != null && metarStore.metar!.remarks.isNotEmpty,
+                                visible: metarStore.metar != null && metarStore.metar!.remarksTranslations.isNotEmpty,
                                 child: Flexible(
                                   flex: 1,
                                   child: SizedBox(
@@ -443,7 +449,7 @@ class _MetarPageState extends State<MetarPage> {
                                                   ),
                                             ),
                                             Text(
-                                              metarStore.metar != null ? metarStore.metar!.remarks : "Remarks",
+                                              metarStore.metar != null ? remarksTranslationString : "Remarks",
                                             ),
                                           ],
                                         ),
