@@ -50,7 +50,6 @@ class Metar {
 
   static Metar fromJson(Map<String, dynamic> json, Airport airport) {
     // Map<String, dynamic> json = jsonDecode(jsonString);
-
     String raw = json['raw'] ?? "";
     String summary = json['summary'] ?? "";
     String station = json['station'] ?? "";
@@ -75,7 +74,7 @@ class Metar {
         cloudLayers.add(CloudLayer(
           repr: layer['repr'],
           type: layer['type'],
-          altitude: layer['altitude'],
+          altitude: layer['altitude'] ?? 0,
           modifier: layer['modifier'],
           direction: layer['direction'],
         ));
@@ -88,6 +87,10 @@ class Metar {
         String value = json["translate"]["remarks"][key];
         remarksTranslations += "$key: $value, ";
       }
+    }
+
+    if (remarksTranslations.isEmpty) {
+      remarksTranslations = json["remarks"];
     }
 
     return Metar(
@@ -161,8 +164,40 @@ class CloudLayer {
     }
   }
 
+  String modifierToReadableString(String modifier) {
+    switch (modifier.toUpperCase()) {
+      case "CB":
+        return "Cumulonimbus";
+      case "TCU":
+        return "Towering Cumulus";
+      case "CI":
+        return "Cirrus";
+      case "CS":
+        return "Cirrostratus";
+      case "SC":
+        return "Stratocumulus";
+      case "AC":
+        return "Altocumulus";
+      case "AS":
+        return "Altostratus";
+      case "NS":
+        return "Nimbostratus";
+      case "CU":
+        return "Cumulus";
+      case "CC":
+        return "Cirrocumulus";
+      case "ST":
+        return "Stratus";
+      default:
+        return "Unknown";
+    }
+  }
+
   @override
   String toString() {
+    if (altitude == 0) {
+      return cloudTypeToReadableString(type) + (modifier != null ? " ${modifierToReadableString(modifier!)}" : "");
+    }
     return "${cloudTypeToReadableString(type)} at ${altitude}00 feet";
   }
 }

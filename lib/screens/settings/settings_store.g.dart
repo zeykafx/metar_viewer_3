@@ -45,13 +45,13 @@ mixin _$SettingsStore on _SettingsStore, Store {
       Atom(name: '_SettingsStore.darkMode', context: context);
 
   @override
-  bool get darkMode {
+  DarkMode get darkMode {
     _$darkModeAtom.reportRead();
     return super.darkMode;
   }
 
   @override
-  set darkMode(bool value) {
+  set darkMode(DarkMode value) {
     _$darkModeAtom.reportWrite(value, super.darkMode, () {
       super.darkMode = value;
     });
@@ -136,7 +136,7 @@ mixin _$SettingsStore on _SettingsStore, Store {
   }
 
   @override
-  void setDarkMode(bool value) {
+  void setDarkMode(DarkMode value) {
     final _$actionInfo = _$_SettingsStoreActionController.startAction(
         name: '_SettingsStore.setDarkMode');
     try {

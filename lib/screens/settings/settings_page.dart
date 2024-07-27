@@ -52,25 +52,52 @@ class _GeneralSettingsState extends State<GeneralSettings> {
       return SettingsSection(
         title: "General",
         children: [
+          // ListTile(
+          //   title: const Text(
+          //     "Dark Mode",
+          //   ),
+          //   subtitle: Text(
+          //     "${settingsStore.darkMode ? "Disable" : "Enable"} dark mode",
+          //   ),
+          //   onTap: () {
+          //     MyApp.of(context).changeThemeMode(!settingsStore.darkMode ? ThemeMode.dark : ThemeMode.light);
+          //     settingsStore.setDarkMode(!settingsStore.darkMode);
+          //   },
+          //   trailing: Switch(
+          //     value: settingsStore.darkMode,
+          //     onChanged: (bool value) {
+          //       MyApp.of(context).changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
+          //       settingsStore.setDarkMode(value);
+          //     },
+          //   ),
+          // ),
           ListTile(
-            title: const Text(
-              "Dark Mode",
-            ),
-            subtitle: Text(
-              "${settingsStore.darkMode ? "Disable" : "Enable"} dark mode",
-            ),
-            onTap: () {
-              MyApp.of(context).changeThemeMode(!settingsStore.darkMode ? ThemeMode.dark : ThemeMode.light);
-              settingsStore.setDarkMode(!settingsStore.darkMode);
-            },
-            trailing: Switch(
-              value: settingsStore.darkMode,
-              onChanged: (bool value) {
-                MyApp.of(context).changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
-                settingsStore.setDarkMode(value);
-              },
-            ),
-          ),
+              title: const Text(
+                "Dark Mode",
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: SegmentedButton(
+                  style: const ButtonStyle(visualDensity: VisualDensity.compact),
+                  segments: darkModeNames
+                      .map(
+                        (option) => ButtonSegment(
+                          value: option,
+                          label: Text(
+                            option,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  selected: {darkModeNames[settingsStore.darkMode.index]},
+                  onSelectionChanged: (selection) async {
+                    DarkMode mode = DarkMode.values[darkModeNames.indexOf(selection.first)];
+                    settingsStore.setDarkMode(mode);
+                    MyApp.of(context).changeThemeMode(mode);
+                  },
+                ),
+              )),
 
           // default page
           ListTile(

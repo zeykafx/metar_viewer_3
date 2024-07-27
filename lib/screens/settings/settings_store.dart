@@ -5,6 +5,31 @@ part 'settings_store.g.dart';
 
 class SettingsStore = _SettingsStore with _$SettingsStore;
 
+enum DarkMode {
+  system,
+  dark,
+  light,
+}
+
+DarkMode stringToDarkMode(String darkModeString) {
+  return switch (darkModeString) {
+    "System" => DarkMode.system,
+    "Dark" => DarkMode.dark,
+    "Light" => DarkMode.light,
+    String() => DarkMode.system,
+  };
+}
+
+String darkModeToString(DarkMode darkMode) {
+  return switch (darkMode) {
+    DarkMode.system => "System",
+    DarkMode.dark => "Dark",
+    DarkMode.light => "Light",
+  };
+}
+
+const darkModeNames = ["System", "Dark", "Light"];
+
 abstract class _SettingsStore with Store {
   late LocalStorageInterface prefs;
 
@@ -17,7 +42,7 @@ abstract class _SettingsStore with Store {
 
     startPage = prefs.getBool("startPage") ?? false;
 
-    darkMode = prefs.getBool('darkMode') ?? false;
+    darkMode = stringToDarkMode(prefs.getString('darkMode') ?? "System");
 
     fetchMetarOnStartup = prefs.getBool("fetchMetarOnStartup") ?? false;
     defaultMetarAirport = prefs.getString("defaultMetarAirport");
@@ -41,12 +66,12 @@ abstract class _SettingsStore with Store {
   }
 
   @observable
-  bool darkMode = false;
+  DarkMode darkMode = DarkMode.system;
 
   @action
-  void setDarkMode(bool value) {
+  void setDarkMode(DarkMode value) {
     darkMode = value;
-    prefs.setBool('darkMode', value);
+    prefs.setString('darkMode', darkModeToString(value));
   }
 
   @observable

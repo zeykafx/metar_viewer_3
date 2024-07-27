@@ -123,15 +123,23 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> init() async {
     pref = await LocalStorage.getInstance();
-    bool? darkMode = pref.getBool('darkMode');
-    if (darkMode != null) {
-      themeMode = darkMode ? ThemeMode.dark : ThemeMode.light;
-    }
+
+    String darkMode = pref.getString('darkMode') ?? "System";
+
+    themeMode = darkMode == "System"
+        ? ThemeMode.system
+        : darkMode == "Dark"
+            ? ThemeMode.dark
+            : ThemeMode.light;
   }
 
-  void changeThemeMode(ThemeMode mode) {
+  void changeThemeMode(DarkMode mode) {
     setState(() {
-      themeMode = mode;
+      themeMode = mode == DarkMode.system
+          ? ThemeMode.system
+          : mode == DarkMode.dark
+              ? ThemeMode.dark
+              : ThemeMode.light;
     });
   }
 
@@ -230,40 +238,6 @@ class _HomePageState extends State<HomePage> {
           TafPage(),
         ],
       ),
-      // body: NestedScrollView(
-      //   headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-      //     return <Widget>[
-      //       SliverAppBar(
-      //         title: const Text('Metar Viewer'),
-      //         actions: [
-      //           IconButton(
-      //             onPressed: () {
-      //               Navigator.of(context).push(
-      //                 MaterialPageRoute(
-      //                   builder: (context) => const SettingsPage(),
-      //                 ),
-      //               );
-      //             },
-      //             icon: const Icon(Icons.settings),
-      //           ),
-      //         ],
-      //       ),
-      //     ];
-      //   },
-      //   body: PageView(
-      //     controller: pageController,
-      //     allowImplicitScrolling: true,
-      //     onPageChanged: (int index) {
-      //       setState(() {
-      //         currentPageIndex = index;
-      //       });
-      //     },
-      //     children: const <Widget>[
-      //       MetarPage(),
-      //       TafPage(),
-      //     ],
-      //   ),
-      // ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: _onItemTapped,
         selectedIndex: currentPageIndex,
