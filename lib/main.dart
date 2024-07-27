@@ -101,7 +101,7 @@ ThemeData darkTheme(ColorScheme? darkColorScheme) {
   );
 }
 
-class MyApp extends Cup.StatefulWidget {
+class MyApp extends StatefulWidget {
   MyApp({super.key});
 
   @override
@@ -124,7 +124,15 @@ class _MyAppState extends State<MyApp> {
   Future<void> init() async {
     pref = await LocalStorage.getInstance();
 
-    String darkMode = pref.getString('darkMode') ?? "System";
+    // "darkMode" shared pref used to be a boolean, now it's a string, so we need to check for both
+    if (pref.containsKey("darkMode")) {
+      pref.remove('darkMode');
+      if (kDebugMode) {
+        print("REMOVED OLD DARKMODE PREF");
+      }
+    }
+
+    String darkMode = pref.getString('newDarkMode') ?? "System";
 
     themeMode = darkMode == "System"
         ? ThemeMode.system
@@ -134,6 +142,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   void changeThemeMode(DarkMode mode) {
+    if (kDebugMode) {
+      print("Changing theme to $mode");
+    }
     setState(() {
       themeMode = mode == DarkMode.system
           ? ThemeMode.system
@@ -183,6 +194,7 @@ class _HomePageState extends State<HomePage> {
     while (!settingsStore.initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
+
     if (settingsStore.startPage) {
       if (kDebugMode) {
         print("TAF Page is the start page");
@@ -200,7 +212,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void _onItemTapped(int index) {
+  void onItemTapped(int index) {
     setState(() {
       currentPageIndex = index;
       pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
@@ -239,7 +251,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       bottomNavigationBar: NavigationBar(
-        onDestinationSelected: _onItemTapped,
+        onDestinationSelected: onItemTapped,
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(

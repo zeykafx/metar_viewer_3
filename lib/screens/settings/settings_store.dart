@@ -1,4 +1,5 @@
 import 'package:cross_local_storage/cross_local_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
 part 'settings_store.g.dart';
@@ -42,7 +43,7 @@ abstract class _SettingsStore with Store {
 
     startPage = prefs.getBool("startPage") ?? false;
 
-    darkMode = stringToDarkMode(prefs.getString('darkMode') ?? "System");
+    darkMode = stringToDarkMode(prefs.getString('newDarkMode') ?? "System");
 
     fetchMetarOnStartup = prefs.getBool("fetchMetarOnStartup") ?? false;
     defaultMetarAirport = prefs.getString("defaultMetarAirport");
@@ -71,7 +72,7 @@ abstract class _SettingsStore with Store {
   @action
   void setDarkMode(DarkMode value) {
     darkMode = value;
-    prefs.setString('darkMode', darkModeToString(value));
+    prefs.setString('newDarkMode', darkModeToString(value));
   }
 
   @observable
