@@ -82,7 +82,8 @@ class _MetarPageState extends State<MetarPage> {
 
     return SelectableRegion(
       focusNode: FocusNode(),
-      selectionControls: materialTextSelectionControls,
+      selectionControls: MaterialTextSelectionControls(),
+
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
         child: Card(
