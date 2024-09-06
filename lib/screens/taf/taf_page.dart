@@ -18,7 +18,7 @@ class TafPage extends StatefulWidget {
 class _TafPageState extends State<TafPage> {
   TafStore tafStore = TafStore();
   SettingsStore settingsStore = SettingsStore();
-  int MIN_WIDTH = 300;
+  int MIN_WIDTH = 350;
   int SMALL_WIDTH = 400;
 
   Map<String, String> typeToDescription = {
@@ -145,32 +145,60 @@ class _TafPageState extends State<TafPage> {
                                     ],
                                   ),
 
-                                  const Spacer(),
-
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
                                   // Search bar
                                   Expanded(
-                                    flex: 4,
-                                    child: SearchAnchor.bar(
-                                      searchController: SearchController(),
-                                      isFullScreen: MediaQuery.of(context).size.width < 700,
-                                      suggestionsBuilder: (
-                                        BuildContext context,
-                                        SearchController controller,
-                                      ) {
-                                        if (controller.text.isEmpty ||
-                                            controller.text == "" ||
-                                            controller.text == " ") {
-                                          if (tafStore.searchHistory.isNotEmpty && mounted) {
-                                            return tafStore.getHistoryList(controller, context, mounted);
-                                          }
-                                          return [
-                                            const Center(
-                                              child: Text("No history"),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 4,
+                                          child: SearchAnchor.bar(
+                                            searchController: SearchController(),
+                                            isFullScreen: MediaQuery.of(context).size.width < 700,
+                                            suggestionsBuilder: (
+                                              BuildContext context,
+                                              SearchController controller,
+                                            ) {
+                                              if (controller.text.isEmpty ||
+                                                  controller.text == "" ||
+                                                  controller.text == " ") {
+                                                if (tafStore.searchHistory.isNotEmpty && mounted) {
+                                                  return tafStore.getHistoryList(controller, context, mounted);
+                                                }
+                                                return [
+                                                  const Center(
+                                                    child: Text("No history"),
+                                                  ),
+                                                ];
+                                              }
+                                              return tafStore.getSuggestions(controller, context, mounted);
+                                            },
+                                          ),
+                                        ),
+                                        if (tafStore.hasTaf && tafStore.taf != null) ...[
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: IconButton.filledTonal(
+                                              icon: const Icon(Icons.refresh),
+                                              onPressed: () async {
+                                                if (tafStore.hasTaf && tafStore.taf != null) {
+                                                  Airport? airport =
+                                                      await tafStore.getAirportFromIcao(tafStore.taf!.station);
+                                                  if (airport != null) {
+                                                    tafStore.fetchTaf(airport);
+                                                  } else {
+                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            "Cannot find the airport for the ICAO: ${tafStore.taf!.station}")));
+                                                  }
+                                                }
+                                              },
                                             ),
-                                          ];
-                                        }
-                                        return tafStore.getSuggestions(controller, context, mounted);
-                                      },
+                                          ),
+                                        ],
+                                      ],
                                     ),
                                   ),
                                 ],

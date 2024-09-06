@@ -20,7 +20,7 @@ class _MetarPageState extends State<MetarPage> {
   MetarStore metarStore = MetarStore();
   SettingsStore settingsStore = SettingsStore();
 
-  int MIN_WIDTH = 300;
+  int MIN_WIDTH = 350;
   int SMALL_WIDTH = 500;
 
   @override
@@ -83,7 +83,6 @@ class _MetarPageState extends State<MetarPage> {
     return SelectableRegion(
       focusNode: FocusNode(),
       selectionControls: MaterialTextSelectionControls(),
-
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
         child: Card(
@@ -107,6 +106,7 @@ class _MetarPageState extends State<MetarPage> {
                           if (metarStore.isLoading) ...[
                             const LinearProgressIndicator(),
                           ],
+
                           IntrinsicHeight(
                             child: Padding(
                               padding: EdgeInsets.all(mediaQuery.size.width > SMALL_WIDTH ? 14 : 10),
@@ -168,32 +168,54 @@ class _MetarPageState extends State<MetarPage> {
                                     ],
                                   ),
 
-                                  const Spacer(),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
 
                                   // Search bar
                                   Expanded(
-                                    flex: 4,
-                                    child: SearchAnchor.bar(
-                                      searchController: SearchController(),
-                                      isFullScreen: MediaQuery.of(context).size.width < 700,
-                                      suggestionsBuilder: (
-                                        BuildContext context,
-                                        SearchController controller,
-                                      ) {
-                                        if (controller.text.isEmpty ||
-                                            controller.text == "" ||
-                                            controller.text == " ") {
-                                          if (metarStore.searchHistory.isNotEmpty && mounted) {
-                                            return metarStore.getHistoryList(controller, context, mounted);
-                                          }
-                                          return [
-                                            const Center(
-                                              child: Text("No history"),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Expanded(
+                                          flex: 4,
+                                          child: SearchAnchor.bar(
+                                            searchController: SearchController(),
+                                            isFullScreen: MediaQuery.of(context).size.width < 700,
+                                            suggestionsBuilder: (
+                                              BuildContext context,
+                                              SearchController controller,
+                                            ) {
+                                              if (controller.text.isEmpty ||
+                                                  controller.text == "" ||
+                                                  controller.text == " ") {
+                                                if (metarStore.searchHistory.isNotEmpty && mounted) {
+                                                  return metarStore.getHistoryList(controller, context, mounted);
+                                                }
+                                                return [
+                                                  const Center(
+                                                    child: Text("No history"),
+                                                  ),
+                                                ];
+                                              }
+                                              return metarStore.getSuggestions(controller, context, mounted);
+                                            },
+                                          ),
+                                        ),
+                                        if (metarStore.hasMetar && metarStore.metar != null) ...[
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: IconButton.filledTonal(
+                                              icon: const Icon(Icons.refresh),
+                                              onPressed: () {
+                                                if (metarStore.hasMetar && metarStore.metar != null) {
+                                                  metarStore.fetchMetar(metarStore.metar!.airport);
+                                                }
+                                              },
                                             ),
-                                          ];
-                                        }
-                                        return metarStore.getSuggestions(controller, context, mounted);
-                                      },
+                                          ),
+                                        ],
+                                      ],
                                     ),
                                   ),
                                 ],
