@@ -32,7 +32,7 @@ class _AirportInfoState extends State<AirportInfo> {
                 child: SizedBox(
                   width: double.infinity,
                   child: Card(
-                    color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                    color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.4),
                     elevation: 0,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -121,7 +121,7 @@ class _AirportInfoState extends State<AirportInfo> {
         SizedBox(
           width: double.infinity,
           child: Card(
-            color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+            color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.4),
             elevation: 0,
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -133,7 +133,8 @@ class _AirportInfoState extends State<AirportInfo> {
                   Text(
                     "Frequencies",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).dividerColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
                   ),
                   // ground
@@ -247,7 +248,7 @@ class _BestRunwayForWindsState extends State<BestRunwayForWinds> {
     bestRunwayUrl = getBestRunwayUrl(bestRunwayAngle);
 
     return Card(
-      color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+      color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.4),
       elevation: 0,
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -295,7 +296,7 @@ class _BestRunwayForWindsState extends State<BestRunwayForWinds> {
                     child: Icon(
                       Icons.arrow_right_alt_rounded,
                       size: 100,
-                      color: Theme.of(context).dividerColor.withOpacity(1),
+                      color: Theme.of(context).dividerColor.withValues(alpha: 1),
                     ),
                   ),
                 ],

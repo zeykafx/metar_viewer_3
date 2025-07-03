@@ -21,13 +21,19 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: const Text('Settings'),
       ),
-      body: ListView(
-        shrinkWrap: true,
-        children: const [
-          GeneralSettings(),
-          WeatherSection(),
-          AboutSection(),
-        ],
+      body: Center(
+        child: Container(
+          alignment: Alignment.topCenter,
+          constraints: BoxConstraints(maxWidth: 700),
+          child: ListView(
+            shrinkWrap: true,
+            children: const [
+              GeneralSettings(),
+              WeatherSection(),
+              AboutSection(),
+            ],
+          ),
+        ),
       ),
     );
   }
