@@ -18,8 +18,10 @@ class TafPage extends StatefulWidget {
 class _TafPageState extends State<TafPage> {
   TafStore tafStore = TafStore();
   SettingsStore settingsStore = SettingsStore();
-  int MIN_WIDTH = 350;
-  int SMALL_WIDTH = 400;
+  SearchController searchController = SearchController();
+
+  static const int MIN_WIDTH = 350;
+  static const int SMALL_WIDTH = 400;
 
   Map<String, String> typeToDescription = {
     "FROM": "Changes expected from a date/hour to another date/hour",
@@ -85,276 +87,268 @@ class _TafPageState extends State<TafPage> {
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: mediaQuery.size.width > SMALL_WIDTH ? 12 : 8,
+        horizontal: mediaQuery.size.width > SMALL_WIDTH ? 32 : 18,
         vertical: 12.0,
       ),
-      child: Card(
-        margin: EdgeInsets.zero,
-        elevation: 0,
-        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.2),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: mediaQuery.size.width > SMALL_WIDTH ? 20 : 10, vertical: 0),
-          child: Center(
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 700),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(
-                  // controller: ScrollController(),
-                  child: Observer(
-                    builder: (context) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (tafStore.isLoading) ...[
-                            const LinearProgressIndicator(),
-                          ],
-                          IntrinsicHeight(
-                            child: Padding(
-                              padding: const EdgeInsets.all(14.0),
-                              child: Flex(
-                                direction: mediaQuery.size.width > MIN_WIDTH ? Axis.horizontal : Axis.vertical,
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: SingleChildScrollView(
+              // controller: ScrollController(),
+              child: Observer(
+                builder: (context) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (tafStore.isLoading) ...[
+                        const LinearProgressIndicator(),
+                      ],
+                      IntrinsicHeight(
+                        child: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: Flex(
+                            direction: mediaQuery.size.width > MIN_WIDTH ? Axis.horizontal : Axis.vertical,
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: mediaQuery.size.width > MIN_WIDTH
+                                ? CrossAxisAlignment.center
+                                : CrossAxisAlignment.start,
+                            children: [
+                              // Airport name
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: mediaQuery.size.width > MIN_WIDTH
-                                    ? CrossAxisAlignment.center
-                                    : CrossAxisAlignment.start,
                                 children: [
-                                  // Airport name
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      //STATION
-                                      Text(
-                                        tafStore.taf != null ? tafStore.taf!.station : "Station",
-                                        style: Theme.of(context).textTheme.headlineMedium,
-                                      ),
-
-                                      Text(
-                                        tafStore.taf != null
-                                            ? formatTime(tafStore.taf!.time.millisecondsSinceEpoch)
-                                            : "Time",
-                                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                              color: Theme.of(context).dividerColor,
-                                            ),
-                                      ),
-                                    ],
+                                  //STATION
+                                  Text(
+                                    tafStore.taf != null ? tafStore.taf!.station : "Station",
+                                    style: Theme.of(context).textTheme.headlineMedium,
                                   ),
 
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  // Search bar
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 4,
-                                          child: SearchAnchor.bar(
-                                            searchController: SearchController(),
-                                            isFullScreen: MediaQuery.of(context).size.width < 700,
-                                            suggestionsBuilder: (
-                                              BuildContext context,
-                                              SearchController controller,
-                                            ) {
-                                              if (controller.text.isEmpty ||
-                                                  controller.text == "" ||
-                                                  controller.text == " ") {
-                                                if (tafStore.searchHistory.isNotEmpty && mounted) {
-                                                  return tafStore.getHistoryList(controller, context, mounted);
-                                                }
-                                                return [
-                                                  const Center(
-                                                    child: Text("No history"),
-                                                  ),
-                                                ];
-                                              }
-                                              return tafStore.getSuggestions(controller, context, mounted);
-                                            },
-                                          ),
+                                  Text(
+                                    tafStore.taf != null
+                                        ? formatTime(tafStore.taf!.time.millisecondsSinceEpoch)
+                                        : "Time",
+                                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                          color: Theme.of(context).dividerColor,
                                         ),
-                                        if (tafStore.hasTaf && tafStore.taf != null) ...[
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: IconButton.filledTonal(
-                                              icon: const Icon(Icons.refresh),
-                                              onPressed: () async {
-                                                if (tafStore.hasTaf && tafStore.taf != null) {
-                                                  Airport? airport =
-                                                      await tafStore.getAirportFromIcao(tafStore.taf!.station);
-                                                  if (airport != null) {
-                                                    tafStore.fetchTaf(airport);
-                                                  } else {
-                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                        content: Text(
-                                                            "Cannot find the airport for the ICAO: ${tafStore.taf!.station}")));
-                                                  }
-                                                }
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      ],
-                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: Card(
-                              color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
-                              elevation: 0,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 28.0,
-                                  vertical: 22.0,
-                                ),
-                                child: Column(
+
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              // Search bar
+                              Expanded(
+                                child: Row(
                                   children: [
-                                    Text(
-                                      "Raw TAF",
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                            color: Theme.of(context).dividerColor,
-                                          ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: SearchAnchor.bar(
+                                        searchController: searchController,
+                                        isFullScreen: MediaQuery.of(context).size.width < 700,
+                                        suggestionsBuilder: (
+                                          BuildContext context,
+                                          SearchController controller,
+                                        ) {
+                                          if (controller.text.isEmpty ||
+                                              controller.text == "" ||
+                                              controller.text == " ") {
+                                            if (tafStore.searchHistory.isNotEmpty && mounted) {
+                                              return tafStore.getHistoryList(controller, context, mounted);
+                                            }
+                                            return [
+                                              const Center(
+                                                child: Text("No history"),
+                                              ),
+                                            ];
+                                          }
+                                          return tafStore.getSuggestions(controller, context, mounted);
+                                        },
+                                      ),
                                     ),
-                                    Text(
-                                      tafStore.taf != null ? tafStore.taf!.sanitized : "Raw TAF",
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    Text(
-                                      "Time",
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                            color: Theme.of(context).dividerColor,
-                                          ),
-                                    ),
-                                    Text(
-                                      tafStore.taf != null
-                                          ? formatDatetime(tafStore.taf!.startTime, tafStore.taf!.endTime, false)
-                                          : "Time",
-                                    ),
+                                    if (tafStore.hasTaf && tafStore.taf != null) ...[
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: IconButton.filledTonal(
+                                          icon: const Icon(Icons.refresh, size: 20),
+                                          onPressed: () async {
+                                            if (tafStore.hasTaf && tafStore.taf != null) {
+                                              Airport? airport =
+                                                  await tafStore.getAirportFromIcao(tafStore.taf!.station);
+                                              if (airport != null) {
+                                                tafStore.fetchTaf(airport);
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                    content: Text(
+                                                        "Cannot find the airport for the ICAO: ${tafStore.taf!.station}")));
+                                              }
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ],
                                   ],
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-
-                          const SizedBox(height: 16.0),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: Text(
-                              "Forecasts",
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Card(
+                          color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                          elevation: 0,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 28.0,
+                              vertical: 22.0,
                             ),
-                          ),
-
-                          if (tafStore.taf == null) ...[
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 4.0,
-                                horizontal: mediaQuery.size.width > SMALL_WIDTH ? 30 : 15,
-                              ),
-                              child: SizedBox(
-                                width: double.infinity,
-                                height: 500,
-                                child: Card(
-                                  color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
-                                  elevation: 0,
-                                  child: const Center(
-                                    child: Text("Forecasts"),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-
-                          // taf forecasts
-                          if (tafStore.taf != null) ...[
-                            ...tafStore.taf!.forecast
-                                .asMap()
-                                .map(
-                                  (i, forecast) => MapEntry(
-                                    i,
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 4.0,
-                                        horizontal: mediaQuery.size.width > SMALL_WIDTH ? 30 : 15,
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Raw TAF",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: Theme.of(context).dividerColor,
                                       ),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        child: Card(
-                                          color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
-                                          elevation: 0,
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 28.0,
-                                              vertical: 22.0,
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  "Type",
-                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                        color: Theme.of(context).dividerColor,
-                                                      ),
-                                                ),
-                                                Tooltip(
-                                                  enableFeedback: true,
-                                                  triggerMode: TooltipTriggerMode.tap,
-                                                  message: typeToDescription[forecast.type] ?? "Description",
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      Text(forecast.type),
-                                                      const SizedBox(width: 3.0),
-                                                      Icon(
-                                                        Icons.info,
-                                                        size: 13.0,
-                                                        color: Theme.of(context).dividerColor,
-                                                      ),
-                                                    ],
+                                ),
+                                Text(
+                                  tafStore.taf != null ? tafStore.taf!.sanitized : "Raw TAF",
+                                ),
+                                const SizedBox(height: 8.0),
+                                Text(
+                                  "Time",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: Theme.of(context).dividerColor,
+                                      ),
+                                ),
+                                Text(
+                                  tafStore.taf != null
+                                      ? formatDatetime(tafStore.taf!.startTime, tafStore.taf!.endTime, false)
+                                      : "Time",
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16.0),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          "Forecasts",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+
+                      if (tafStore.taf == null) ...[
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 4.0,
+                            horizontal: mediaQuery.size.width > SMALL_WIDTH ? 30 : 15,
+                          ),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 500,
+                            child: Card(
+                              color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                              elevation: 0,
+                              child: const Center(
+                                child: Text("Forecasts"),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+
+                      // taf forecasts
+                      if (tafStore.taf != null) ...[
+                        ...tafStore.taf!.forecast
+                            .asMap()
+                            .map(
+                              (i, forecast) => MapEntry(
+                                i,
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 4.0,
+                                    horizontal: mediaQuery.size.width > SMALL_WIDTH ? 30 : 15,
+                                  ),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    child: Card(
+                                      color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                                      elevation: 0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 28.0,
+                                          vertical: 22.0,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "Type",
+                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                    color: Theme.of(context).dividerColor,
                                                   ),
-                                                ),
-                                                const SizedBox(height: 8.0),
-                                                Text(
-                                                  "Summary",
-                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                        color: Theme.of(context).dividerColor,
-                                                      ),
-                                                ),
-                                                Text(forecast.summary),
-                                                const SizedBox(height: 8.0),
-                                                Text(
-                                                  "Time",
-                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                        color: Theme.of(context).dividerColor,
-                                                      ),
-                                                ),
-                                                Text(formatDatetime(forecast.startTime, forecast.endTime, false)),
-                                              ],
                                             ),
-                                          ),
+                                            Tooltip(
+                                              enableFeedback: true,
+                                              triggerMode: TooltipTriggerMode.tap,
+                                              message: typeToDescription[forecast.type] ?? "Description",
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(forecast.type),
+                                                  const SizedBox(width: 3.0),
+                                                  Icon(
+                                                    Icons.info,
+                                                    size: 13.0,
+                                                    color: Theme.of(context).dividerColor,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8.0),
+                                            Text(
+                                              "Summary",
+                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                    color: Theme.of(context).dividerColor,
+                                                  ),
+                                            ),
+                                            Text(forecast.summary),
+                                            const SizedBox(height: 8.0),
+                                            Text(
+                                              "Time",
+                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                    color: Theme.of(context).dividerColor,
+                                                  ),
+                                            ),
+                                            Text(formatDatetime(forecast.startTime, forecast.endTime, false)),
+                                          ],
                                         ),
                                       ),
-                                    ).animate(delay: Duration(milliseconds: 100 + i * 150)).fadeIn(),
+                                    ),
                                   ),
-                                )
-                                .values,
-                          ],
-                        ],
-                      );
-                    },
-                  ),
-                ),
+                                ).animate(delay: Duration(milliseconds: 100 + i * 150)).fadeIn(),
+                              ),
+                            )
+                            .values,
+                      ],
+                    ],
+                  );
+                },
               ),
             ),
           ),

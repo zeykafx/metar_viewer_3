@@ -1,12 +1,10 @@
 import 'dart:io';
 
-import 'package:cross_local_storage/cross_local_storage.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/cupertino.dart' as Cup;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -14,6 +12,7 @@ import 'package:metar_viewer_3/screens/settings/settings_page.dart';
 import 'package:metar_viewer_3/screens/settings/settings_store.dart';
 import 'package:metar_viewer_3/screens/taf/taf_page.dart';
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'screens/metar/metar_page.dart';
@@ -112,7 +111,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late LocalStorageInterface pref;
+  late SharedPreferences pref;
   ThemeMode themeMode = ThemeMode.system;
 
   @override
@@ -122,7 +121,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> init() async {
-    pref = await LocalStorage.getInstance();
+    // pref = await LocalStorage.getInstance();
+    pref = await SharedPreferences.getInstance();
 
     // "darkMode" shared pref used to be a boolean, now it's a string, so we need to check for both
     if (pref.containsKey("darkMode")) {

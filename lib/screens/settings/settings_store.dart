@@ -1,6 +1,7 @@
-import 'package:cross_local_storage/cross_local_storage.dart';
+// import 'package:cross_local_storage/cross_local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'settings_store.g.dart';
 
@@ -32,14 +33,14 @@ String darkModeToString(DarkMode darkMode) {
 const darkModeNames = ["System", "Dark", "Light"];
 
 abstract class _SettingsStore with Store {
-  late LocalStorageInterface prefs;
-
+  // late LocalStorageInterface prefs;
+  late SharedPreferences prefs;
   _SettingsStore() {
     init();
   }
 
   Future<void> init() async {
-    prefs = await LocalStorage.getInstance();
+    prefs = await SharedPreferences.getInstance();
 
     startPage = prefs.getBool("startPage") ?? false;
 

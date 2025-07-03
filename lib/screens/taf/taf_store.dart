@@ -1,4 +1,3 @@
-import 'package:cross_local_storage/cross_local_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:metar_viewer_3/api/avwx.dart';
@@ -6,6 +5,7 @@ import 'package:metar_viewer_3/main.dart';
 import 'package:metar_viewer_3/models/airport.dart';
 import 'package:metar_viewer_3/models/taf.dart';
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'taf_store.g.dart';
 
@@ -89,7 +89,7 @@ abstract class _TafStore with Store {
     // add to the search history if it's not already in it
     if (searchHistory.isEmpty || !searchHistory.any((e) => e.icao == airport.icao)) {
       searchHistory.insert(0, airport);
-      LocalStorageInterface pref = await LocalStorage.getInstance();
+      SharedPreferences pref = await SharedPreferences.getInstance();
       // save the new search history to the prefs
       await pref.setStringList(
         "tafSearchHistory",
@@ -105,7 +105,7 @@ abstract class _TafStore with Store {
   Future<void> removeFromSearchHistory(Airport airport) async {
     if (searchHistory.contains(airport)) {
       searchHistory.remove(airport);
-      LocalStorageInterface pref = await LocalStorage.getInstance();
+      SharedPreferences pref = await SharedPreferences.getInstance();
       // save the new search history to the prefs
       await pref.setStringList(
         "tafSearchHistory",
@@ -119,7 +119,7 @@ abstract class _TafStore with Store {
 
   @action
   Future<void> getSearchHistoryFromPrefs() async {
-    LocalStorageInterface pref = await LocalStorage.getInstance();
+    SharedPreferences pref = await SharedPreferences.getInstance();
     List<String>? history = pref.getStringList("tafSearchHistory");
     if (history != null) {
       for (String icao in history) {
