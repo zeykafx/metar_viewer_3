@@ -2,7 +2,7 @@
 	<uses-permission android:name="android.permission.INTERNET"/>
 
 	<application
-        android:label="metar_viewer_3"
+        android:label="Metar Viewer"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
