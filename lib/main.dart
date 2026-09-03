@@ -1,20 +1,19 @@
 import 'dart:io';
 
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:flutter/cupertino.dart' as Cup;
+import 'package:cupertino_ui/cupertino_ui.dart' as Cup;
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:metar_viewer_3/screens/settings/settings_page.dart';
 import 'package:metar_viewer_3/screens/settings/settings_store.dart';
 import 'package:metar_viewer_3/screens/taf/taf_page.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 import 'screens/metar/metar_page.dart';
 
 Database? database;
@@ -101,7 +100,7 @@ ThemeData darkTheme(ColorScheme? darkColorScheme) {
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -137,8 +136,8 @@ class _MyAppState extends State<MyApp> {
     themeMode = darkMode == "System"
         ? ThemeMode.system
         : darkMode == "Dark"
-            ? ThemeMode.dark
-            : ThemeMode.light;
+        ? ThemeMode.dark
+        : ThemeMode.light;
   }
 
   void changeThemeMode(DarkMode mode) {
@@ -149,25 +148,27 @@ class _MyAppState extends State<MyApp> {
       themeMode = mode == DarkMode.system
           ? ThemeMode.system
           : mode == DarkMode.dark
-              ? ThemeMode.dark
-              : ThemeMode.light;
+          ? ThemeMode.dark
+          : ThemeMode.light;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme) {
-      lightColorScheme = lightColorScheme;
-      darkColorScheme = darkColorScheme;
+    return DynamicColorBuilder(
+      builder: (lightColorScheme, darkColorScheme) {
+        lightColorScheme = lightColorScheme;
+        darkColorScheme = darkColorScheme;
 
-      return MaterialApp(
-        title: 'Metar Viewer',
-        theme: lightTheme(lightColorScheme),
-        darkTheme: darkTheme(darkColorScheme),
-        themeMode: themeMode,
-        home: const HomePage(),
-      );
-    });
+        return MaterialApp(
+          title: 'Metar Viewer',
+          theme: lightTheme(lightColorScheme),
+          darkTheme: darkTheme(darkColorScheme),
+          themeMode: themeMode,
+          home: const HomePage(),
+        );
+      },
+    );
   }
 }
 
@@ -227,11 +228,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
-                ),
-              );
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
             },
             icon: const Icon(Icons.settings),
           ),
@@ -245,25 +242,14 @@ class _HomePageState extends State<HomePage> {
             currentPageIndex = index;
           });
         },
-        children: const <Widget>[
-          MetarPage(),
-          TafPage(),
-        ],
+        children: const <Widget>[MetarPage(), TafPage()],
       ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: onItemTapped,
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.cloud_rounded),
-            icon: Icon(Icons.cloud_outlined),
-            label: 'Metar',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Cup.CupertinoIcons.cloud_sun_rain_fill),
-            icon: Icon(Cup.CupertinoIcons.cloud_sun_rain),
-            label: 'TAF',
-          ),
+          NavigationDestination(selectedIcon: Icon(Icons.cloud_rounded), icon: Icon(Icons.cloud_outlined), label: 'Metar'),
+          NavigationDestination(selectedIcon: Icon(Cup.CupertinoIcons.cloud_sun_rain_fill), icon: Icon(Cup.CupertinoIcons.cloud_sun_rain), label: 'TAF'),
         ],
       ),
     );

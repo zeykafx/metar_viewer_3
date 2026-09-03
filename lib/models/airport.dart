@@ -31,7 +31,7 @@ class Airport {
     this.frequencies,
   );
 
-  static fromDb(Map<String, dynamic> data) {
+  static Airport fromDb(Map<String, dynamic> data) {
     int numRunways = data['NumRunways'] ?? 0;
     List<Runway> runways = [];
 

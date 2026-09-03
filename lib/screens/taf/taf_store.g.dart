@@ -12,9 +12,10 @@ mixin _$TafStore on _TafStore, Store {
   Computed<bool>? _$hasTafComputed;
 
   @override
-  bool get hasTaf => (_$hasTafComputed ??=
-          Computed<bool>(() => super.hasTaf, name: '_TafStore.hasTaf'))
-      .value;
+  bool get hasTaf => (_$hasTafComputed ??= Computed<bool>(
+    () => super.hasTaf,
+    name: '_TafStore.hasTaf',
+  )).value;
 
   late final _$tafAtom = Atom(name: '_TafStore.taf', context: context);
 
@@ -31,8 +32,10 @@ mixin _$TafStore on _TafStore, Store {
     });
   }
 
-  late final _$hasAlertAtom =
-      Atom(name: '_TafStore.hasAlert', context: context);
+  late final _$hasAlertAtom = Atom(
+    name: '_TafStore.hasAlert',
+    context: context,
+  );
 
   @override
   bool get hasAlert {
@@ -47,8 +50,10 @@ mixin _$TafStore on _TafStore, Store {
     });
   }
 
-  late final _$alertMessageAtom =
-      Atom(name: '_TafStore.alertMessage', context: context);
+  late final _$alertMessageAtom = Atom(
+    name: '_TafStore.alertMessage',
+    context: context,
+  );
 
   @override
   String get alertMessage {
@@ -63,8 +68,10 @@ mixin _$TafStore on _TafStore, Store {
     });
   }
 
-  late final _$isLoadingAtom =
-      Atom(name: '_TafStore.isLoading', context: context);
+  late final _$isLoadingAtom = Atom(
+    name: '_TafStore.isLoading',
+    context: context,
+  );
 
   @override
   bool get isLoading {
@@ -79,8 +86,10 @@ mixin _$TafStore on _TafStore, Store {
     });
   }
 
-  late final _$searchHistoryAtom =
-      Atom(name: '_TafStore.searchHistory', context: context);
+  late final _$searchHistoryAtom = Atom(
+    name: '_TafStore.searchHistory',
+    context: context,
+  );
 
   @override
   List<Airport> get searchHistory {
@@ -95,68 +104,94 @@ mixin _$TafStore on _TafStore, Store {
     });
   }
 
-  late final _$fetchTafAsyncAction =
-      AsyncAction('_TafStore.fetchTaf', context: context);
+  late final _$fetchTafAsyncAction = AsyncAction(
+    '_TafStore.fetchTaf',
+    context: context,
+  );
 
   @override
   Future<void> fetchTaf(Airport airport) {
     return _$fetchTafAsyncAction.run(() => super.fetchTaf(airport));
   }
 
-  late final _$getAirportFromIcaoAsyncAction =
-      AsyncAction('_TafStore.getAirportFromIcao', context: context);
+  late final _$getAirportFromIcaoAsyncAction = AsyncAction(
+    '_TafStore.getAirportFromIcao',
+    context: context,
+  );
 
   @override
   Future<Airport?> getAirportFromIcao(String icao) {
-    return _$getAirportFromIcaoAsyncAction
-        .run(() => super.getAirportFromIcao(icao));
+    return _$getAirportFromIcaoAsyncAction.run(
+      () => super.getAirportFromIcao(icao),
+    );
   }
 
-  late final _$addToSearchHistoryAsyncAction =
-      AsyncAction('_TafStore.addToSearchHistory', context: context);
+  late final _$addToSearchHistoryAsyncAction = AsyncAction(
+    '_TafStore.addToSearchHistory',
+    context: context,
+  );
 
   @override
   Future<void> addToSearchHistory(Airport airport) {
-    return _$addToSearchHistoryAsyncAction
-        .run(() => super.addToSearchHistory(airport));
+    return _$addToSearchHistoryAsyncAction.run(
+      () => super.addToSearchHistory(airport),
+    );
   }
 
-  late final _$removeFromSearchHistoryAsyncAction =
-      AsyncAction('_TafStore.removeFromSearchHistory', context: context);
+  late final _$removeFromSearchHistoryAsyncAction = AsyncAction(
+    '_TafStore.removeFromSearchHistory',
+    context: context,
+  );
 
   @override
   Future<void> removeFromSearchHistory(Airport airport) {
-    return _$removeFromSearchHistoryAsyncAction
-        .run(() => super.removeFromSearchHistory(airport));
+    return _$removeFromSearchHistoryAsyncAction.run(
+      () => super.removeFromSearchHistory(airport),
+    );
   }
 
-  late final _$getSearchHistoryFromPrefsAsyncAction =
-      AsyncAction('_TafStore.getSearchHistoryFromPrefs', context: context);
+  late final _$getSearchHistoryFromPrefsAsyncAction = AsyncAction(
+    '_TafStore.getSearchHistoryFromPrefs',
+    context: context,
+  );
 
   @override
   Future<void> getSearchHistoryFromPrefs() {
-    return _$getSearchHistoryFromPrefsAsyncAction
-        .run(() => super.getSearchHistoryFromPrefs());
+    return _$getSearchHistoryFromPrefsAsyncAction.run(
+      () => super.getSearchHistoryFromPrefs(),
+    );
   }
 
-  late final _$getSuggestionsAsyncAction =
-      AsyncAction('_TafStore.getSuggestions', context: context);
+  late final _$getSuggestionsAsyncAction = AsyncAction(
+    '_TafStore.getSuggestions',
+    context: context,
+  );
 
   @override
   Future<Iterable<Widget>> getSuggestions(
-      SearchController controller, BuildContext context, bool mounted) {
-    return _$getSuggestionsAsyncAction
-        .run(() => super.getSuggestions(controller, context, mounted));
+    SearchController controller,
+    BuildContext context,
+    bool mounted,
+  ) {
+    return _$getSuggestionsAsyncAction.run(
+      () => super.getSuggestions(controller, context, mounted),
+    );
   }
 
-  late final _$_TafStoreActionController =
-      ActionController(name: '_TafStore', context: context);
+  late final _$_TafStoreActionController = ActionController(
+    name: '_TafStore',
+    context: context,
+  );
 
   @override
   Iterable<Widget> getHistoryList(
-      SearchController controller, BuildContext context, bool mounted) {
+    SearchController controller,
+    BuildContext context,
+    bool mounted,
+  ) {
     final _$actionInfo = _$_TafStoreActionController.startAction(
-        name: '_TafStore.getHistoryList');
+      name: '_TafStore.getHistoryList',
+    );
     try {
       return super.getHistoryList(controller, context, mounted);
     } finally {

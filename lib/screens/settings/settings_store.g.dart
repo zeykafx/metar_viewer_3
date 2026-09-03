@@ -9,8 +9,10 @@ part of 'settings_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$SettingsStore on _SettingsStore, Store {
-  late final _$startPageAtom =
-      Atom(name: '_SettingsStore.startPage', context: context);
+  late final _$startPageAtom = Atom(
+    name: '_SettingsStore.startPage',
+    context: context,
+  );
 
   @override
   bool get startPage {
@@ -25,8 +27,10 @@ mixin _$SettingsStore on _SettingsStore, Store {
     });
   }
 
-  late final _$initializedAtom =
-      Atom(name: '_SettingsStore.initialized', context: context);
+  late final _$initializedAtom = Atom(
+    name: '_SettingsStore.initialized',
+    context: context,
+  );
 
   @override
   bool get initialized {
@@ -41,8 +45,10 @@ mixin _$SettingsStore on _SettingsStore, Store {
     });
   }
 
-  late final _$darkModeAtom =
-      Atom(name: '_SettingsStore.darkMode', context: context);
+  late final _$darkModeAtom = Atom(
+    name: '_SettingsStore.darkMode',
+    context: context,
+  );
 
   @override
   DarkMode get darkMode {
@@ -57,8 +63,10 @@ mixin _$SettingsStore on _SettingsStore, Store {
     });
   }
 
-  late final _$fetchMetarOnStartupAtom =
-      Atom(name: '_SettingsStore.fetchMetarOnStartup', context: context);
+  late final _$fetchMetarOnStartupAtom = Atom(
+    name: '_SettingsStore.fetchMetarOnStartup',
+    context: context,
+  );
 
   @override
   bool get fetchMetarOnStartup {
@@ -73,8 +81,10 @@ mixin _$SettingsStore on _SettingsStore, Store {
     });
   }
 
-  late final _$fetchTafOnStartupAtom =
-      Atom(name: '_SettingsStore.fetchTafOnStartup', context: context);
+  late final _$fetchTafOnStartupAtom = Atom(
+    name: '_SettingsStore.fetchTafOnStartup',
+    context: context,
+  );
 
   @override
   bool get fetchTafOnStartup {
@@ -89,8 +99,10 @@ mixin _$SettingsStore on _SettingsStore, Store {
     });
   }
 
-  late final _$defaultMetarAirportAtom =
-      Atom(name: '_SettingsStore.defaultMetarAirport', context: context);
+  late final _$defaultMetarAirportAtom = Atom(
+    name: '_SettingsStore.defaultMetarAirport',
+    context: context,
+  );
 
   @override
   String? get defaultMetarAirport {
@@ -105,8 +117,10 @@ mixin _$SettingsStore on _SettingsStore, Store {
     });
   }
 
-  late final _$defaultTafAirportAtom =
-      Atom(name: '_SettingsStore.defaultTafAirport', context: context);
+  late final _$defaultTafAirportAtom = Atom(
+    name: '_SettingsStore.defaultTafAirport',
+    context: context,
+  );
 
   @override
   String? get defaultTafAirport {
@@ -121,13 +135,16 @@ mixin _$SettingsStore on _SettingsStore, Store {
     });
   }
 
-  late final _$_SettingsStoreActionController =
-      ActionController(name: '_SettingsStore', context: context);
+  late final _$_SettingsStoreActionController = ActionController(
+    name: '_SettingsStore',
+    context: context,
+  );
 
   @override
   void setStartPage(bool val) {
     final _$actionInfo = _$_SettingsStoreActionController.startAction(
-        name: '_SettingsStore.setStartPage');
+      name: '_SettingsStore.setStartPage',
+    );
     try {
       return super.setStartPage(val);
     } finally {
@@ -138,7 +155,8 @@ mixin _$SettingsStore on _SettingsStore, Store {
   @override
   void setDarkMode(DarkMode value) {
     final _$actionInfo = _$_SettingsStoreActionController.startAction(
-        name: '_SettingsStore.setDarkMode');
+      name: '_SettingsStore.setDarkMode',
+    );
     try {
       return super.setDarkMode(value);
     } finally {
@@ -149,7 +167,8 @@ mixin _$SettingsStore on _SettingsStore, Store {
   @override
   void setFetchMetarOnStartup(bool value) {
     final _$actionInfo = _$_SettingsStoreActionController.startAction(
-        name: '_SettingsStore.setFetchMetarOnStartup');
+      name: '_SettingsStore.setFetchMetarOnStartup',
+    );
     try {
       return super.setFetchMetarOnStartup(value);
     } finally {
@@ -160,7 +179,8 @@ mixin _$SettingsStore on _SettingsStore, Store {
   @override
   void setFetchTafOnStartup(bool value) {
     final _$actionInfo = _$_SettingsStoreActionController.startAction(
-        name: '_SettingsStore.setFetchTafOnStartup');
+      name: '_SettingsStore.setFetchTafOnStartup',
+    );
     try {
       return super.setFetchTafOnStartup(value);
     } finally {
@@ -171,7 +191,8 @@ mixin _$SettingsStore on _SettingsStore, Store {
   @override
   void setDefaultMetarAirport(String value) {
     final _$actionInfo = _$_SettingsStoreActionController.startAction(
-        name: '_SettingsStore.setDefaultMetarAirport');
+      name: '_SettingsStore.setDefaultMetarAirport',
+    );
     try {
       return super.setDefaultMetarAirport(value);
     } finally {
@@ -182,7 +203,8 @@ mixin _$SettingsStore on _SettingsStore, Store {
   @override
   void setDefaultTafAirport(String value) {
     final _$actionInfo = _$_SettingsStoreActionController.startAction(
-        name: '_SettingsStore.setDefaultTafAirport');
+      name: '_SettingsStore.setDefaultTafAirport',
+    );
     try {
       return super.setDefaultTafAirport(value);
     } finally {

@@ -1,3 +1,5 @@
+import 'package:material_ui/material_ui.dart';
+
 class Taf {
   final String raw;
   final String sanitized;
@@ -10,18 +12,7 @@ class Taf {
   final String maxTemp;
   final String minTemp;
 
-  Taf(
-    this.raw,
-    this.sanitized,
-    this.station,
-    this.time,
-    this.remarks,
-    this.forecast,
-    this.startTime,
-    this.endTime,
-    this.maxTemp,
-    this.minTemp,
-  );
+  Taf(this.raw, this.sanitized, this.station, this.time, this.remarks, this.forecast, this.startTime, this.endTime, this.maxTemp, this.minTemp);
 
   static Taf fromJson(Map<String, dynamic> json) {
     return Taf(
@@ -44,10 +35,10 @@ class TafForecast {
   // final List<CloudLayer> clouds;
   final String flightRules;
   final String sanitized;
-  // final Visibility? visibility;
-  // final Wind? windDirection;
+  final Visibility? visibility;
+  final Wind? windDirection;
   // final Wind? windGust;
-  // final Wind? windSpeed;
+  final Wind? windSpeed;
   final List<WxCode>? wxCodes;
   final DateTime endTime;
   // final dynamic probability;
@@ -63,10 +54,10 @@ class TafForecast {
     // this.clouds,
     this.flightRules,
     this.sanitized,
-    // this.visibility,
-    // this.windDirection,
+    this.visibility,
+    this.windDirection,
     // this.windGust,
-    // this.windSpeed,
+    this.windSpeed,
     this.wxCodes,
     this.endTime,
     // this.probability,
@@ -77,6 +68,18 @@ class TafForecast {
     // this.windShear,
     this.summary,
   );
+
+  Color getFlightRulesColor(BuildContext context) {
+    return flightRules == "VFR"
+        ? Colors.green
+        : flightRules == "MVFR"
+        ? Colors.blue
+        : flightRules == "IFR"
+        ? Colors.red
+        : flightRules == "LIFR"
+        ? Colors.purple
+        : Theme.of(context).colorScheme.primaryContainer;
+  }
 
   static TafForecast fromJson(Map<String, dynamic> json) {
     // List<CloudLayer> clouds = [];
@@ -93,10 +96,7 @@ class TafForecast {
     List<WxCode> wxCodes = [];
     if (json['wx_codes'] != null) {
       for (var wxCode in json['wx_codes']) {
-        wxCodes.add(WxCode(
-          wxCode['repr'],
-          wxCode['value'],
-        ));
+        wxCodes.add(WxCode(wxCode['repr'], wxCode['value']));
       }
     }
     return TafForecast(
@@ -104,20 +104,8 @@ class TafForecast {
       // clouds,
       json['flight_rules'] ?? "",
       json['sanitized'] ?? "",
-      // json['visibility'] != null
-      //     ? Visibility(
-      //         json['visibility']['repr'],
-      //         json['visibility']['value'],
-      //         json['visibility']['spoken'],
-      //       )
-      //     : null,
-      // json['wind_direction'] != null
-      //     ? Wind(
-      //         json['wind_direction']['repr'],
-      //         json['wind_direction']['value'],
-      //         json['wind_direction']['spoken'],
-      //       )
-      //     : null,
+      json['visibility'] != null ? Visibility(json['visibility']['repr'], json['visibility']['value'] ?? 0) : null,
+      json['wind_direction'] != null ? Wind(json['wind_direction']['repr'], json['wind_direction']['value'] ?? 0) : null,
       // json["wind_gust"] != null
       //     ? Wind(
       //         json['wind_gust']['repr'],
@@ -125,13 +113,7 @@ class TafForecast {
       //         json['wind_gust']['spoken'],
       //       )
       //     : null,
-      // json['wind_speed'] != null
-      //     ? Wind(
-      //         json['wind_speed']['repr'],
-      //         json['wind_speed']['value'],
-      //         json['wind_speed']['spoken'],
-      //       )
-      //     : null,
+      json['wind_speed'] != null ? Wind(json['wind_speed']['repr'], json['wind_speed']['value']) : null,
       wxCodes,
       // DateTime.parse(json['end_time']['dt']),
       DateTime.parse(json['end_time']['dt']),
@@ -149,8 +131,8 @@ class WxCode {
   final String repr;
   final String value;
 
-  WxCode(
-    this.repr,
-    this.value,
-  );
+  WxCode(this.repr, this.value);
 }
+
+class Wind(final String repr, final int speed);
+class Visibility(final String repr, final int value);

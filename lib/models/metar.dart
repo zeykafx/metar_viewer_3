@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'airport.dart';
+import 'remarks_translator.dart';
 
 class Metar {
   String raw;
@@ -53,7 +52,7 @@ class Metar {
     String raw = json['raw'] ?? "";
     String summary = json['summary'] ?? "";
     String station = json['station'] ?? "";
-    DateTime observationTime = DateTime.parse(json['time']['dt']) ?? DateTime.now();
+    DateTime observationTime = DateTime.parse(json['time']['dt']);
     DateTime time = DateTime.parse(json['meta']['timestamp']);
     int windDirection = json['wind_direction']['value'] ?? 0;
     String windSpeed = json['wind_speed']['repr'] ?? "0";
@@ -63,7 +62,7 @@ class Metar {
     String temperature = json['temperature']['repr'] ?? "?";
     String dewpoint = json['dewpoint']['repr'] ?? "?";
     String temperatureUnits = json['units']['temperature'] ?? "C";
-    String altimeter = json['altimeter']['value'].toString() ?? "?";
+    String altimeter = json['altimeter']['value'].toString();
     bool altIsInHg = json['units']['altimeter'] == 'inHg';
     String flightRules = json['flight_rules'] ?? "?";
     String remarks = json['remarks'] ?? "";
@@ -71,27 +70,19 @@ class Metar {
     List<CloudLayer> cloudLayers = [];
     if (json['clouds'] != null) {
       for (var layer in json['clouds']) {
-        cloudLayers.add(CloudLayer(
-          repr: layer['repr'],
-          type: layer['type'],
-          altitude: layer['altitude'] ?? 0,
-          modifier: layer['modifier'],
-          direction: layer['direction'],
-        ));
+        cloudLayers.add(
+          CloudLayer(
+            repr: layer['repr'],
+            type: layer['type'],
+            altitude: layer['base'] ?? layer['altitude'] ?? 0,
+            modifier: layer['modifier'],
+            direction: layer['direction'],
+          ),
+        );
       }
     }
 
-    String remarksTranslations = "";
-    if (json["translate"] != null) {
-      for (var key in json["translate"]["remarks"].keys) {
-        String value = json["translate"]["remarks"][key];
-        remarksTranslations += "$key: $value, ";
-      }
-    }
-
-    if (remarksTranslations.isEmpty) {
-      remarksTranslations = json["remarks"];
-    }
+    String remarksTranslations = RemarkTranslator.translate(remarks);
 
     return Metar(
       raw: raw,
@@ -116,6 +107,21 @@ class Metar {
       remarksTranslations: remarksTranslations,
     );
   }
+
+  String flightRulesToReadableString() {
+    switch (flightRules.toUpperCase()) {
+      case "VFR":
+        return "Visual Flight Rules";
+      case "MVFR":
+        return "Marginal Visual Flight Rules";
+      case "IFR":
+        return "Instrument Flight Rules";
+      case "LIFR":
+        return "Low Instrument Flight Rules";
+      default:
+        return flightRules.isEmpty ? "Unknown" : flightRules;
+    }
+  }
 }
 
 class CloudLayer {
@@ -133,13 +139,7 @@ class CloudLayer {
   String? modifier;
   String? direction;
 
-  CloudLayer({
-    required this.repr,
-    required this.type,
-    required this.altitude,
-    this.modifier,
-    this.direction,
-  });
+  CloudLayer({required this.repr, required this.type, required this.altitude, this.modifier, this.direction});
 
   String cloudTypeToReadableString(String cloudType) {
     switch (cloudType.toUpperCase()) {
@@ -193,11 +193,36 @@ class CloudLayer {
     }
   }
 
+  int get altitudeInFeet => altitude * 100;
+
+  String get coverageLabel => cloudTypeToReadableString(type);
+
+  String? get modifierLabel => modifier == null ? null : modifierToReadableString(modifier!);
+
+  String get altitudeLabel => altitude == 0 ? '' : '${_formatAltitude(altitudeInFeet)} ft';
+
   @override
   String toString() {
-    if (altitude == 0) {
-      return cloudTypeToReadableString(type) + (modifier != null ? " ${modifierToReadableString(modifier!)}" : "");
+    final StringBuffer buffer = StringBuffer(coverageLabel);
+    if (altitude > 0) {
+      buffer.write(' at ${_formatAltitude(altitudeInFeet)} ft');
     }
-    return "${cloudTypeToReadableString(type)} at ${altitude}00 feet";
+    if (modifier != null) {
+      buffer.write(' (${modifierToReadableString(modifier!)})');
+    }
+    return buffer.toString();
   }
+}
+
+// formats a number with thousands separators (e.g. 4600 -> "4,600").
+String _formatAltitude(int value) {
+  final String digits = value.toString();
+  final StringBuffer buffer = StringBuffer();
+  for (int i = 0; i < digits.length; i++) {
+    if (i > 0 && (digits.length - i) % 3 == 0) {
+      buffer.write(',');
+    }
+    buffer.write(digits[i]);
+  }
+  return buffer.toString();
 }

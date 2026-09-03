@@ -1,5 +1,5 @@
 import "package:flutter/foundation.dart";
-import "package:flutter/material.dart";
+import "package:material_ui/material_ui.dart";
 import "package:metar_viewer_3/api/avwx.dart";
 import "package:metar_viewer_3/main.dart";
 import "package:metar_viewer_3/models/airport.dart";
@@ -32,6 +32,21 @@ abstract class _MetarStore with Store {
 
   @observable
   List<Airport> searchHistory = [];
+
+  @action
+  Color getFlightRulesColor(BuildContext context) {
+    return metar != null
+        ? metar!.flightRules == "VFR"
+              ? Colors.green
+              : metar!.flightRules == "MVFR"
+              ? Colors.blue
+              : metar!.flightRules == "IFR"
+              ? Colors.red
+              : metar!.flightRules == "LIFR"
+              ? Colors.purple
+              : Theme.of(context).colorScheme.primaryContainer
+        : Theme.of(context).colorScheme.primaryContainer;
+  }
 
   @action
   Future<void> fetchMetar(Airport airport) async {
@@ -69,11 +84,7 @@ abstract class _MetarStore with Store {
       await Future.delayed(const Duration(milliseconds: 100));
     }
 
-    List<Map<String, Object?>> res = await database!.query(
-      "NatFixes",
-      where: "NavId LIKE ?",
-      whereArgs: ["%$icao%"],
-    );
+    List<Map<String, Object?>> res = await database!.query("NatFixes", where: "NavId LIKE ?", whereArgs: ["%$icao%"]);
 
     if (res.isEmpty) {
       hasAlert = true;
@@ -93,10 +104,7 @@ abstract class _MetarStore with Store {
       SharedPreferences pref = await SharedPreferences.getInstance();
 
       // save the new search history to the prefs
-      await pref.setStringList(
-        "searchHistory",
-        searchHistory.map((e) => e.icao).toList(),
-      );
+      await pref.setStringList("searchHistory", searchHistory.map((e) => e.icao).toList());
       if (kDebugMode) {
         print("saved search history");
       }
@@ -109,10 +117,7 @@ abstract class _MetarStore with Store {
       searchHistory.remove(airport);
       SharedPreferences pref = await SharedPreferences.getInstance();
       // save the new search history to the prefs
-      await pref.setStringList(
-        "searchHistory",
-        searchHistory.map((e) => e.icao).toList(),
-      );
+      await pref.setStringList("searchHistory", searchHistory.map((e) => e.icao).toList());
       if (kDebugMode) {
         print('removed ${airport.icao} from search history');
       }
@@ -130,11 +135,7 @@ abstract class _MetarStore with Store {
           await Future.delayed(const Duration(milliseconds: 100));
         }
 
-        List<Map<String, Object?>> res = await database!.query(
-          "NatFixes",
-          where: "NavId LIKE ?",
-          whereArgs: ["%$icao%"],
-        );
+        List<Map<String, Object?>> res = await database!.query("NatFixes", where: "NavId LIKE ?", whereArgs: ["%$icao%"]);
 
         Airport airportFromPrefs = Airport.fromDb(res[0]);
         if (!searchHistory.contains(airportFromPrefs)) {
@@ -149,11 +150,7 @@ abstract class _MetarStore with Store {
   }
 
   @action
-  Iterable<Widget> getHistoryList(
-    SearchController controller,
-    BuildContext context,
-    bool mounted,
-  ) {
+  Iterable<Widget> getHistoryList(SearchController controller, BuildContext context, bool mounted) {
     if (!mounted) {
       return [];
     }
@@ -169,9 +166,7 @@ abstract class _MetarStore with Store {
               context: context,
               builder: (context) => AlertDialog(
                 title: const Text("Delete airport from history?"),
-                content: Text(
-                  "Do you really want to delete ${airport.icao} from your search history?",
-                ),
+                content: Text("Do you really want to delete ${airport.icao} from your search history?"),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -204,11 +199,7 @@ abstract class _MetarStore with Store {
   }
 
   @action
-  Future<Iterable<Widget>> getSuggestions(
-    SearchController controller,
-    BuildContext context,
-    bool mounted,
-  ) async {
+  Future<Iterable<Widget>> getSuggestions(SearchController controller, BuildContext context, bool mounted) async {
     if (!mounted) {
       return [];
     }
@@ -220,11 +211,7 @@ abstract class _MetarStore with Store {
 
     if (res.isEmpty && controller.text.isNotEmpty) {
       // if no airports have the search query in their icao, search by facility name
-      res = await database!.query(
-        "NatFixes",
-        where: "Facility LIKE ? AND Type = 'AIRPORT'",
-        whereArgs: ["%${controller.text.toUpperCase()}%"],
-      );
+      res = await database!.query("NatFixes", where: "Facility LIKE ? AND Type = 'AIRPORT'", whereArgs: ["%${controller.text.toUpperCase()}%"]);
     }
 
     List<Airport> airports = [];

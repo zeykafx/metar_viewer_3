@@ -9,7 +9,7 @@ import 'package:metar_viewer_3/models/metar.dart';
 import '../models/taf.dart';
 
 class AvwxApi {
-  int CACHE_DURATION_MIN = 5;
+  int cacheDurationMin = 5;
   String? token = dotenv.env["TOKEN"];
   String baseUrl = "https://avwx.rest/api/";
   Map<String, (Airport, DateTime, Metar)> metarCachedAirports = {};
@@ -28,8 +28,8 @@ class AvwxApi {
     DateTime currentTime = DateTime.now();
 
     // if the metar for a specific airport has been fetched less than 3 minutes ago, do not fetch again
-    if (metarCachedAirports[icao] case (Airport apt, DateTime timeFetched, Metar cachedMetar)) {
-      if (currentTime.difference(timeFetched) < Duration(minutes: CACHE_DURATION_MIN)) {
+    if (metarCachedAirports[icao] case (_, DateTime timeFetched, Metar cachedMetar)) {
+      if (currentTime.difference(timeFetched) < Duration(minutes: cacheDurationMin)) {
         if (kDebugMode) {
           print("Metar is still valid");
         }
@@ -41,12 +41,7 @@ class AvwxApi {
     Dio dio = Dio();
     Response response;
     try {
-      response = await dio.get(
-        reqUrl,
-        options: Options(
-          headers: {HttpHeaders.authorizationHeader: token!},
-        ),
-      );
+      response = await dio.get(reqUrl, options: Options(headers: {HttpHeaders.authorizationHeader: token!}));
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -74,8 +69,8 @@ class AvwxApi {
     String icao = airport.icao;
     DateTime currentTime = DateTime.now();
 
-    if (tafCachedAirport[icao] case (Airport airport, DateTime lastUpdated, Taf cachedTaf)) {
-      if (currentTime.difference(lastUpdated) < Duration(minutes: CACHE_DURATION_MIN)) {
+    if (tafCachedAirport[icao] case (_, DateTime lastUpdated, Taf cachedTaf)) {
+      if (currentTime.difference(lastUpdated) < Duration(minutes: cacheDurationMin)) {
         // taf report was cached
         return (cachedTaf, true, lastUpdated);
       }
@@ -86,12 +81,7 @@ class AvwxApi {
     Response response;
 
     try {
-      response = await dio.get(
-        reqUrl,
-        options: Options(
-          headers: {HttpHeaders.authorizationHeader: token!},
-        ),
-      );
+      response = await dio.get(reqUrl, options: Options(headers: {HttpHeaders.authorizationHeader: token!}));
     } catch (e) {
       if (kDebugMode) {
         print(e);

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:metar_viewer_3/models/airport.dart';
 import 'package:metar_viewer_3/models/metar.dart';
@@ -15,7 +15,7 @@ class AirportInfo extends StatefulWidget {
 }
 
 class _AirportInfoState extends State<AirportInfo> {
-  int MIN_WIDTH = 500;
+  int minWidth = 500;
 
   @override
   Widget build(BuildContext context) {
@@ -25,83 +25,75 @@ class _AirportInfoState extends State<AirportInfo> {
         IntrinsicHeight(
           child: Flex(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            direction: mediaQuery.size.width > MIN_WIDTH ? Axis.horizontal : Axis.vertical,
+            direction: mediaQuery.size.width > minWidth ? Axis.horizontal : Axis.vertical,
             children: [
               Flexible(
-                flex: mediaQuery.size.width > MIN_WIDTH ? 1 : 0,
+                flex: mediaQuery.size.width > minWidth ? 1 : 0,
                 child: SizedBox(
                   width: double.infinity,
                   child: Card(
                     color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.4),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(25)),
                     elevation: 0,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 28.0,
-                        vertical: 22.0,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 22.0),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Airport name, state, type
                           Text(
                             "${widget.airport.icao} - ${widget.airport.facility}, ${widget.airport.state} (${widget.airport.type})",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).dividerColor, fontWeight: FontWeight.w600),
                           ),
                           // Airport elevation
-                          Text(
-                            "Elevation",
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).dividerColor,
-                                ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Elevation", style: Theme.of(context).textTheme.bodyLarge),
+                              Text("${widget.airport.msl}ft MSL"),
+                            ],
                           ),
-                          Text("${widget.airport.msl}ft MSL (elevation)"),
-                          Text(
-                            "Runways",
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).dividerColor,
-                                ),
-                          ),
+
+                          Divider(),
+
+                          Text("Runways", style: Theme.of(context).textTheme.bodyLarge),
                           // Airport runways
-                          for (Runway runway in widget.airport.runways)
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: runway.name,
-                                    style: Theme.of(context).textTheme.bodySmall,
+                          for (Runway runway in widget.airport.runways) ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(text: runway.name, style: Theme.of(context).textTheme.bodySmall),
+                                      TextSpan(
+                                        text: ": ",
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).dividerColor),
+                                      ),
+                                    ],
                                   ),
-                                  TextSpan(
-                                    text: ": ",
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: Theme.of(context).dividerColor,
-                                        ),
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(text: "${runway.length}ft", style: Theme.of(context).textTheme.bodySmall),
+                                      TextSpan(
+                                        text: " x ",
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).dividerColor),
+                                      ),
+                                      TextSpan(text: "${runway.width}ft", style: Theme.of(context).textTheme.bodySmall),
+                                      // surface
+                                      TextSpan(
+                                        text: " - ${runway.surface}",
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).dividerColor),
+                                      ),
+                                    ],
                                   ),
-                                  TextSpan(
-                                    text: "${runway.length}ft",
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  TextSpan(
-                                    text: " x ",
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: Theme.of(context).dividerColor,
-                                        ),
-                                  ),
-                                  TextSpan(
-                                    text: "${runway.width}ft",
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  // surface
-                                  TextSpan(
-                                    text: " - ${runway.surface}",
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: Theme.of(context).dividerColor,
-                                        ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
+                            Divider(),
+                          ],
                         ],
                       ),
                     ),
@@ -122,54 +114,84 @@ class _AirportInfoState extends State<AirportInfo> {
           width: double.infinity,
           child: Card(
             color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.4),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(25)),
             elevation: 0,
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 28.0,
-                vertical: 22.0,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 22.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Frequencies",
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      "Frequencies",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600, color: Theme.of(context).dividerColor),
+                    ),
                   ),
                   // ground
-                  if (widget.airport.gndFreq.isNotEmpty)
-                    Text(
-                      'Ground: ${widget.airport.gndFreq} MHz',
-                      // style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  // tower
-                  if (widget.airport.towerFreq.isNotEmpty)
-                    Text(
-                      'Tower: ${widget.airport.towerFreq} MHz',
-                      // style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  // ctaf
-                  if (widget.airport.ctafFreq.isNotEmpty)
-                    Text(
-                      'CTAF: ${widget.airport.ctafFreq} MHz',
-                      // style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  // asos
-                  if (widget.airport.asosFreq.isNotEmpty)
-                    Text(
-                      'ASOS: ${widget.airport.asosFreq} MHz',
-                      // style: Theme.of(context).textTheme.bodySmall,
-                    ),
-
-                  for (Frequency frequency in widget.airport.frequencies)
+                  if (widget.airport.gndFreq.isNotEmpty) ...[
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("${frequency.name}: "),
-                        Text("${frequency.frequency} MHz"),
+                        Text("Ground:"),
+                        Text(
+                          '${widget.airport.gndFreq} MHz',
+                          // style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       ],
                     ),
+
+                    Divider(),
+                  ],
+                  // tower
+                  if (widget.airport.towerFreq.isNotEmpty) ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Tower:"),
+                        Text(
+                          '${widget.airport.towerFreq} MHz',
+                          // style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+
+                    Divider(),
+                  ],
+                  // ctaf
+                  if (widget.airport.ctafFreq.isNotEmpty) ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("CTAF:"),
+                        Text(
+                          '${widget.airport.ctafFreq} MHz',
+                          // style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                    Divider(),
+                  ],
+
+                  // asos
+                  if (widget.airport.asosFreq.isNotEmpty) ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("ASOS:"),
+                        Text(
+                          '${widget.airport.asosFreq} MHz',
+                          // style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                    Divider(),
+                  ],
+                  for (Frequency frequency in widget.airport.frequencies) ...[
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text("${frequency.name}: "), Text("${frequency.frequency} MHz")]),
+                    Divider(),
+                  ],
                 ],
               ),
             ),
@@ -249,54 +271,53 @@ class _BestRunwayForWindsState extends State<BestRunwayForWinds> {
 
     return Card(
       color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.4),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(25)),
       elevation: 0,
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20.0,
-          vertical: 10.0,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         child: Column(
           children: [
-            const Text(
-              "Best runway for winds",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Suggested runway",
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).dividerColor, fontWeight: FontWeight.w600),
+                ),
+                Text("$bestRunwayName - ${bestRunwayForWinds.length}ft x ${bestRunwayForWinds.width}ft"),
+              ],
             ),
-            Text(
-              "$bestRunwayName - ${bestRunwayForWinds.length}ft x ${bestRunwayForWinds.width}ft",
-            ),
+
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
                   SvgPicture.asset(
                     "assets/compass.svg",
                     width: 250,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                      BlendMode.srcIn,
-                    ),
+                    colorFilter: ColorFilter.mode(Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white, BlendMode.srcIn),
                     alignment: Alignment.center,
                   ),
                   Transform.rotate(
                     angle: vector.radians(bestRunwayAngle.toDouble()),
-                    child: SvgPicture.network(
-                      bestRunwayUrl,
-                      width: 250,
-                      alignment: Alignment.center,
-                    ),
+                    child: SvgPicture.network(bestRunwayUrl, width: 250, alignment: Alignment.center),
                   ),
 
                   // wind direction
                   Transform.rotate(
                     angle: vector.radians(widget.metar.windDirection.toDouble() + 90),
-                    child: Icon(
-                      Icons.arrow_right_alt_rounded,
-                      size: 100,
-                      color: Theme.of(context).dividerColor.withValues(alpha: 1),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // filled arrow
+                        Icon(
+                          Icons.arrow_right_alt_rounded,
+                          size: 99,
+                          color: Colors.white,
+                          shadows: [Shadow(color: Colors.black, offset: Offset(0, 0), blurRadius: 15)],
+                        ),
+                      ],
                     ),
                   ),
                 ],
