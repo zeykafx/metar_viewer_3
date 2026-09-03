@@ -9,4 +9,5 @@ Check it out on the [playstore](https://play.google.com/store/apps/details?id=co
 <img alt="metar.jpg" src="images/metar.jpg" width="300"/>
 <img alt="metar_2.jpg" src="images/metar_2.jpg" width="300"/>
 <img alt="taf.jpg" src="images/taf.jpg" width="300"/>
+<img alt="taf_2.jpg" src="images/taf_2.jpg" width="300"/>
 <img alt="settings.jpg" src="images/settings.jpg" width="300"/>
