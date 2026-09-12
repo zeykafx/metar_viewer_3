@@ -569,7 +569,7 @@ class _MetarPageState extends State<MetarPage> {
                                           spacing: 6,
                                           children: [
                                             Text(
-                                              metarStore.metar!.airport.icao.startsWith(RegExp("K|C")) ? "Remarks" : "Trend Forecast",
+                                            metarStore.metar != null && metarStore.metar!.airport.icao.startsWith(RegExp("K|C")) ? "Remarks" : "Trend Forecast",
                                               style: Theme.of(context).textTheme.bodyLarge
                                                   ?.copyWith(color: Theme.of(context).dividerColor, fontWeight: FontWeight.w600),
                                             ),

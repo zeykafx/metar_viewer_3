@@ -266,7 +266,7 @@ class _TafPageState extends State<TafPage> {
                               (i, forecast) => MapEntry(
                                 i,
                                 Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: mediaQuery.size.width > smallWidth ? 30 : 15),
+                                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                                   child: SizedBox(
                                     width: double.infinity,
                                     child: Card(

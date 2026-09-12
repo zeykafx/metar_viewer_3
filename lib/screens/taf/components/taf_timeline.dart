@@ -47,9 +47,10 @@ class TafTimeline extends StatelessWidget {
             width: itemWidth,
             height: itemHeight,
             child: Container(
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Theme.of(context).colorScheme.surfaceContainer),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(13), color: Theme.of(context).colorScheme.surfaceContainer),
+              margin: const EdgeInsets.symmetric(vertical: 4),
               child: Card(
-                margin: const EdgeInsets.symmetric(vertical: 2.0),
+                margin: EdgeInsets.zero,
                 color: forecastColor.withValues(alpha: 0.2),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadiusGeometry.circular(13),
