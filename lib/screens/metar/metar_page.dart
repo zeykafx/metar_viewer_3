@@ -109,51 +109,6 @@ class _MetarPageState extends State<MetarPage> {
 
   List<Widget> _buildStatCards(MediaQueryData mediaQuery) {
     return <Widget>[
-      // Temperature
-      buildCard(
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 2,
-              children: [
-                Icon(Icons.device_thermostat_rounded, size: 16, color: Theme.of(context).dividerColor),
-                Text(
-                  mediaQuery.size.width < 600 ? "Temp" : "Temperature",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).dividerColor),
-                ),
-              ],
-            ),
-
-            Flexible(child: Text(metarStore.metar != null ? "${metarStore.metar!.temperature}°${metarStore.metar!.temperatureUnits}" : "temp°C")),
-          ],
-        ),
-        mediaQuery,
-      ),
-
-      // Altimeter
-      buildCard(
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 3,
-              children: [
-                Icon(Icons.speed_rounded, size: 16, color: Theme.of(context).dividerColor),
-                Text(
-                  mediaQuery.size.width < 600 ? "Alt." : "Altimeter",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).dividerColor),
-                ),
-              ],
-            ),
-            Flexible(child: Text(metarStore.metar != null ? "${metarStore.metar!.altimeter} ${metarStore.metar!.altIsInHg ? "inHg" : "hPa"}" : "Altimeter")),
-          ],
-        ),
-        mediaQuery,
-      ),
-
       // Winds
       buildCard(
         Column(
@@ -163,7 +118,7 @@ class _MetarPageState extends State<MetarPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 2,
               children: [
-                Icon(Icons.air_rounded, size: 16, color: Theme.of(context).dividerColor),
+                Icon(Icons.air_rounded, size: 14, color: Theme.of(context).dividerColor),
                 Text("Winds", style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).dividerColor)),
               ],
             ),
@@ -174,7 +129,7 @@ class _MetarPageState extends State<MetarPage> {
                 if (metarStore.metar != null)
                   Transform.rotate(
                     angle: vector.radians(metarStore.metar!.windDirection.toDouble() + 90),
-                    child: Icon(Icons.arrow_right_alt_rounded, color: Theme.of(context).dividerColor, size: 17.0, weight: 1.0),
+                    child: Icon(Icons.arrow_right_alt_rounded, color: Theme.of(context).dividerColor, size: 15.0, weight: 1.0),
                   ),
                 Flexible(
                   child: Text(
@@ -214,6 +169,51 @@ class _MetarPageState extends State<MetarPage> {
                     : "Visibility",
               ),
             ),
+          ],
+        ),
+        mediaQuery,
+      ),
+
+      // Altimeter
+      buildCard(
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 3,
+              children: [
+                Icon(Icons.speed_rounded, size: 16, color: Theme.of(context).dividerColor),
+                Text(
+                  mediaQuery.size.width < 600 ? "Alt." : "Altimeter",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).dividerColor),
+                ),
+              ],
+            ),
+            Flexible(child: Text(metarStore.metar != null ? "${metarStore.metar!.altimeter} ${metarStore.metar!.altIsInHg ? "inHg" : "hPa"}" : "Altimeter")),
+          ],
+        ),
+        mediaQuery,
+      ),
+
+      // Temperature
+      buildCard(
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 2,
+              children: [
+                Icon(Icons.device_thermostat_rounded, size: 16, color: Theme.of(context).dividerColor),
+                Text(
+                  mediaQuery.size.width < 600 ? "Temp" : "Temperature",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).dividerColor),
+                ),
+              ],
+            ),
+
+            Flexible(child: Text(metarStore.metar != null ? "${metarStore.metar!.temperature}°${metarStore.metar!.temperatureUnits}" : "temp°C")),
           ],
         ),
         mediaQuery,
@@ -441,31 +441,6 @@ class _MetarPageState extends State<MetarPage> {
                             ),
                           ),
                         ),
-                        // summary card
-                        SizedBox(
-                          width: double.infinity,
-                          child: Card(
-                            color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.4),
-
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(25)),
-                            elevation: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 22.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                spacing: 8,
-                                children: [
-                                  Text(
-                                    "Summary",
-                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).dividerColor, fontWeight: FontWeight.w600),
-                                  ),
-                                  Text(metarStore.metar != null ? metarStore.metar!.summary : "Summary"),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
 
                         // Raw metar
                         SizedBox(
@@ -504,6 +479,32 @@ class _MetarPageState extends State<MetarPage> {
                                     ],
                                   ),
                                   Text(metarStore.metar != null ? metarStore.metar!.raw : "No raw metar."),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // summary card
+                        SizedBox(
+                          width: double.infinity,
+                          child: Card(
+                            color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.4),
+
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(25)),
+                            elevation: 0,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 22.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 8,
+                                children: [
+                                  Text(
+                                    "Summary",
+                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).dividerColor, fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(metarStore.metar != null ? metarStore.metar!.summary : "Summary"),
                                 ],
                               ),
                             ),
@@ -568,7 +569,7 @@ class _MetarPageState extends State<MetarPage> {
                                           spacing: 6,
                                           children: [
                                             Text(
-                                              "Remarks",
+                                              metarStore.metar!.airport.icao.startsWith(RegExp("K|C")) ? "Remarks" : "Trend Forecast",
                                               style: Theme.of(context).textTheme.bodyLarge
                                                   ?.copyWith(color: Theme.of(context).dividerColor, fontWeight: FontWeight.w600),
                                             ),
